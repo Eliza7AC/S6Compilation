@@ -16,13 +16,19 @@ public class Analyseur {
 
         Scanner sc = new Scanner(file);
 
+        /**
+         * scan du programme source mot par mot
+         */
         while (sc.hasNextLine()){
             String line = sc.nextLine();
 
             String[] wordsArray = line.split("\s");
-            List wordsToAdd = Arrays.asList(wordsArray);
-            this.words = (List<String>) Stream.concat(this.words.stream(), wordsToAdd.stream())
-                    .collect(Collectors.toList());
+
+            for (int i = 0; i < wordsArray.length; i++) {
+                if (!wordsArray[i].equals("")){ // n'ajoute pas les espaces
+                    words.add(wordsArray[i]);
+                }
+            }
         }
 
     }

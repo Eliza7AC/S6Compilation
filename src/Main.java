@@ -6,18 +6,20 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
         // chargement du programme Minipasc simulé par un fichier texte
-        Analyseur an = new Analyseur(new File("src/test"));
-
-        System.out.println(" ############################ ");
-        System.out.println(an.getWords().toString());
+        Analyseur analyseur = new Analyseur(new File("src/JeuxEssais/test"));
+        System.out.println(analyseur.getWords().toString());
         System.out.println(" ############################ ");
 
 
-        Identificateur id = new Identificateur();
-        String word = "ECRIRE(\"BONJOUR\")";
-//        id.execute(word);
+        Identificateur identificateurs = new Identificateur();
+        String word = "ECRIRE(\'BONJOUR\');";
+        identificateurs.execute(word);
+        System.out.println("word: " + word);
+        System.out.println(identificateurs.getIdentificateurs().containsKey(word));
+        System.out.println(" ############################ ");
 
-        Compilateur compilateur = new Compilateur(an,id);
+
+        Compilateur compilateur = new Compilateur(analyseur,identificateurs);
         compilateur.interpretation();
 
     }
