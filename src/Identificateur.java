@@ -3,8 +3,7 @@ import java.util.HashMap;
 public class Identificateur {
 
     /**
-     * clé: mot clé MiniPasc
-     * valeur: fonction Java
+     * clé: mot clé MiniPasc => valeur: fonction Java
      */
     HashMap<String, Runnable> identificateurs = new HashMap<>();
 
