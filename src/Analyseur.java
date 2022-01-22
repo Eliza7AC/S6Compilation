@@ -22,16 +22,42 @@ public class Analyseur {
         while (sc.hasNextLine()){
             String line = sc.nextLine();
 
-            String[] wordsArray = line.split("\s");
+//            String[] wordsArray = line.split("\s");
+//            for (int i = 0; i < wordsArray.length; i++) {
+//                if (!wordsArray[i].equals("")){ // n'ajoute pas les espaces
+//                    words.add(wordsArray[i]);
+//                }
+//            }
 
-            for (int i = 0; i < wordsArray.length; i++) {
-                if (!wordsArray[i].equals("")){ // n'ajoute pas les espaces
-                    words.add(wordsArray[i]);
-                }
+            for (Character c : line.toCharArray()){
+                System.out.println("char " + c + " isMereSymbol = " + isMereSymbol(c));
             }
         }
 
     }
+
+    public boolean isMereSymbol(Character c){
+        return c == ',' || c == ';' || c == '.' || c== ':' ||
+                c == '(' || c == ')' || c == '<' || c == '>' ||
+                c == '+' || c == '-' || c == '*' || c == '/';
+    }
+
+    public boolean isComposedSymbol(String s){
+        return s == "<=" || s == ">=" || s == "<>" || s == ":=";
+    }
+
+    public boolean isSpace(Character c){
+        return c==' ';
+    }
+
+
+
+    /** todo 3 cas ouvrants/fermants: () <> {}
+     * todo paramètres => adresse des variables enregistrés
+     * todo reconnaître les nombres
+     */
+
+
 
     public List<String> getWords() {
         return words;

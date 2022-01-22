@@ -13,12 +13,18 @@ public class Main {
         System.out.println(analyseur.getWords().toString());
         System.out.println(" ############################ ");
 
-
         Identificateur identificateurs = new Identificateur();
 
 
         Compilateur compilateur = new Compilateur(analyseur,identificateurs);
         compilateur.interpretation();
+
+
+        System.out.println(" ");
+        Analyseur an = new Analyseur(new File("src/JeuxEssais/simplesSymboles"));
+
+
+
 
     }
 

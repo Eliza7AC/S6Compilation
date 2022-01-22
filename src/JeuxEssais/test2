@@ -1,8 +1,8 @@
-// VAR nb;
+{ VAR nb; }
 DEBUT
     ECRIRE('Entrez un nombre entiez');
-    // LIRE(nb);
-    // nb := nb*nb;
-    // ECRIRE();
-    // ECRIRE('Le carré du nombre est:', nb);
+    { LIRE(nb); }
+    { nb := nb*nb; }
+    { ECRIRE(); }
+    { ECRIRE('Le carré du nombre est:', nb); }
 FIN
