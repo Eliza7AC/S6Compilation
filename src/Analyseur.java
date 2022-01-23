@@ -16,22 +16,23 @@ public class Analyseur {
 
     public File SOURCE;
     public char CARLU; // dernier char lu
-    public boolean PREVIOUS_CHAR_IS_SIMPLE = false;
-    public boolean IS_COMPOSED_SYMBOL = false;
+    public char NEXT_CARLU;
+
     public Integer NOMBRE = null; // dernier nbre lu
     public String CHAINE; // dernier identificateur, mot-clé, ... lu
-    public int NUM_LIGNE; // num ligne lue pour les ERREUR
-    public int CARLU_INDEX;
-
     public ArrayList<String> TABLE_MOTS_RESERVES = new ArrayList<String>(
             Arrays.asList("DEBUT", "ECRIRE", "ENT", "FIN", "LIRE", "SI", "VAR")
     );
 
+    public int NUM_LIGNE; // num ligne lue pour ERREUR
+    public int CARLU_INDEX; // num char lu pour ERREUR
     public ArrayList<String> ERREURS = new ArrayList<String>(Arrays.asList(
             "null",
             "fin de fichier atteinte",
-            "NOMBRE > MAXINT"
+            "NOMBRE > MAXINT",
+            "erreur symbole"
     ));
+
 
 
     /**
@@ -52,7 +53,7 @@ public class Analyseur {
         NUM_LIGNE = 0;
 
         try{
-            // scan char by char
+            // scan line by line
             while (sc.hasNextLine()){
                 NUM_LIGNE++; // à chaque nouvelle ligne
                 CARLU_INDEX = 0;
@@ -60,13 +61,24 @@ public class Analyseur {
                 String strLine = sc.nextLine();
                 char[] charLine = strLine.toCharArray();
 
+                // scan char by char inside the line
+                int j;
                 for (int i = 0; i < charLine.length; i++) {
                     CARLU_INDEX++;
                     CARLU = charLine[i];
-                    System.out.println(CARLU + " AT INDEX " + CARLU_INDEX);
 
 
-                    if (isDigit(CARLU)){
+                    int charLineEnd = charLine.length-1;
+                    if (i+1 <= charLineEnd){
+                        j = i+1; // char suivant
+                        NEXT_CARLU = charLine[j];
+                    }
+
+                    System.out.println(CARLU + " AT INDEX " + CARLU_INDEX + " | " + NEXT_CARLU );
+
+
+                    // todo reconnaître les unités lexicales
+                    if (isDigit()){
                         // concaténation de l'entièreté du nombre char by char
                         RECO_ENTIER();
                     }
@@ -74,26 +86,28 @@ public class Analyseur {
                         // pour repartir à 0 pour le prochain nombre
                         NOMBRE = null;
                     }
+
+
                 } // fin ligne
             } // fin fichier
         } catch (Exception e){
             ERREUR(0); // en cas d'erreur en scannant
         }
-
         ERREUR(1); // lorsque la fin du fichier est lue
-
     }
 
 
     public void ERREUR(int nbError){
-        System.out.println("erreur n°" + nbError +
-                " [ ligne " + NUM_LIGNE + " char " + CARLU_INDEX +
-                " ] message: " + ERREURS.get(nbError));
-
+        System.out.println(
+            "erreur n°" + nbError + " [ ligne " + NUM_LIGNE +
+            " char " + CARLU_INDEX + " ] message: " + ERREURS.get(nbError)
+        );
         System.exit(-1);
     }
 
-
+    /**
+     * reconnaissances d'unités lexicales
+     */
     public T_UNILEX RECO_ENTIER(){
         try{
             if (NOMBRE == null){ // toute première fois
@@ -109,46 +123,57 @@ public class Analyseur {
         return T_UNILEX.ent;
     }
 
+    public T_UNILEX RECO_SYMB(){
+        try{
+            switch(CARLU)
+            {
+                case ';': return T_UNILEX.ptvirg;
+                case '.': return T_UNILEX.point;
+                case '=': return T_UNILEX.eg;
+                case '+': return T_UNILEX.plus;
+                case '-': return T_UNILEX.moins;
+                case '*': return T_UNILEX.mult;
+                case '/': return T_UNILEX.divi;
+                case '(': return T_UNILEX.parouv;
+                case ')': return T_UNILEX.parfer;
+                case '<':
+                    if (NEXT_CARLU == '='){ return T_UNILEX.infe; } // <=
+                    if (NEXT_CARLU == '>'){ return T_UNILEX.diff; } // <>
+                    if (NEXT_CARLU != '=' && NEXT_CARLU != '>'){return T_UNILEX.inf;} // <
+
+                case '>':
+                    if (NEXT_CARLU == '='){return T_UNILEX.supe; } // >=
+                    if (NEXT_CARLU != '='){ return T_UNILEX.sup; } // >
+
+                case ':':
+                    if (NEXT_CARLU == '='){ return T_UNILEX.aff; } // :=
+                    if (NEXT_CARLU != '='){ return T_UNILEX.deuxpts; } // :
+            }
+        } catch (Exception e){
+            ERREUR(3);
+        }
+        return null;
+    }
+
 
     /**
      * unités lexicales
      */
-    public boolean isDigit(Character c){
+    public boolean isDigit(){
         char[] arrayOfNb = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
         for (Character nb : arrayOfNb){
-            if (nb == c){
-                PREVIOUS_CHAR_IS_SIMPLE = false;
+            if (CARLU == nb){
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isMereSymbol(Character c){
-        if(c == ',' || c == ';' || c == '.' || c== ':' ||
-                c == '(' || c == ')' || c == '<' || c == '>' ||
-                c == '+' || c == '-' || c == '*' || c == '/'){
 
-            // if previous char is simple && actual char is simple
-            if (PREVIOUS_CHAR_IS_SIMPLE = true){
-                IS_COMPOSED_SYMBOL = true;
-            }
-            PREVIOUS_CHAR_IS_SIMPLE = true;
-            return true;
-        }
-        else {
-            return false;
-        }
 
-    }
-
-    public boolean isSpace(Character c){
-        if (c== ' '){
-            PREVIOUS_CHAR_IS_SIMPLE = false;
-            return true;
-        }
-        return false;
+    public boolean isSpace(){
+        return CARLU == ' ';
     }
 
 
