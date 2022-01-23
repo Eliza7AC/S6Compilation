@@ -13,6 +13,7 @@ public class Analyseur {
     final private int LONG_MAX_CHAINE = 50;
     final private int NB_MOTS_RESERVES = 7;
     final private int MAXINT = Integer.MAX_VALUE;
+    char[] arrayOfNb = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
     public File SOURCE;
     public char CARLU; // dernier char lu
@@ -34,10 +35,6 @@ public class Analyseur {
     ));
 
 
-
-    /**
-     * constructeur
-     */
     Analyseur(File file) throws FileNotFoundException {
         SOURCE = file;
         LIRE_CAR();
@@ -74,18 +71,10 @@ public class Analyseur {
                         NEXT_CARLU = charLine[j];
                     }
 
-                    System.out.println(CARLU + " AT INDEX " + CARLU_INDEX + " | " + NEXT_CARLU );
+//                    System.out.println(CARLU + " AT INDEX " + CARLU_INDEX + " | " + NEXT_CARLU );
 
-
-                    // todo reconnaître les unités lexicales
-                    if (isDigit()){
-                        // concaténation de l'entièreté du nombre char by char
-                        RECO_ENTIER();
-                    }
-                    else{
-                        // pour repartir à 0 pour le prochain nombre
-                        NOMBRE = null;
-                    }
+                    RECO_ENTIER();
+                    RECO_SYMB();
 
 
                 } // fin ligne
@@ -109,18 +98,26 @@ public class Analyseur {
      * reconnaissances d'unités lexicales
      */
     public T_UNILEX RECO_ENTIER(){
-        try{
-            if (NOMBRE == null){ // toute première fois
-                NOMBRE = getNumericValue(CARLU);
+        if (isDigit()){
+
+            try{
+                if (NOMBRE == null){ // toute première fois
+                    NOMBRE = getNumericValue(CARLU);
+                }
+                else{ // incrémentation de l'entiereté du nombre char by char
+                    NOMBRE = Integer.valueOf(String.valueOf(NOMBRE) + String.valueOf(CARLU));
+                    System.out.println(NOMBRE);
+                }
+            } catch (Exception e){
+                ERREUR(2);
             }
-            else{
-                NOMBRE = Integer.valueOf(String.valueOf(NOMBRE) + String.valueOf(CARLU));
-                System.out.println(NOMBRE);
-            }
-        } catch (Exception e){
-            ERREUR(2);
+            return T_UNILEX.ent;
+
         }
-        return T_UNILEX.ent;
+        else { // pour repartir à 0 pour le prochain nombre
+        NOMBRE = null;
+        return null;
+        }
     }
 
     public T_UNILEX RECO_SYMB(){
@@ -160,20 +157,12 @@ public class Analyseur {
      * unités lexicales
      */
     public boolean isDigit(){
-        char[] arrayOfNb = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-
         for (Character nb : arrayOfNb){
             if (CARLU == nb){
                 return true;
             }
         }
         return false;
-    }
-
-
-
-    public boolean isSpace(){
-        return CARLU == ' ';
     }
 
 
