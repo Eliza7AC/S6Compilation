@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import static java.lang.Character.getNumericValue;
+
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -10,17 +12,12 @@ public class Main {
         Analyseur analyseur = new Analyseur(new File("src/JeuxEssais/test"));
 
 
-//        System.out.println(" ############################ ");
-//        System.out.println("mots du programme: ");
-//        System.out.println(analyseur.getWords().toString());
-//        System.out.println(" ############################ ");
-//
-//        Identificateur identificateurs = new Identificateur();
-//
-//
-//        Compilateur compilateur = new Compilateur(analyseur,identificateurs);
-//        compilateur.interpretation();
 
+
+        // SAUTER_SEPARATEUR:
+        // if char == ( ou { ou <
+        // while (c != ) ou } ou > )
+            // LIRE_CAR
 
     }
 
