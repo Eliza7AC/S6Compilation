@@ -12,12 +12,12 @@ public class Compilateur {
 
     public void interpretation(){
 
-        for (String word : analyseur.getWords()){
-
-            if(identificateurs.getIdentificateurs().containsKey(word)){
-                identificateurs.execute(word);
-            }
-
-        }
+//        for (String word : analyseur.getWords()){
+//
+//            if(identificateurs.getIdentificateurs().containsKey(word)){
+//                identificateurs.execute(word);
+//            }
+//
+//        }
     }
 }
