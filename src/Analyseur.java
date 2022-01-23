@@ -41,7 +41,6 @@ public class Analyseur {
     }
 
 
-
     /**
      * procédures
      */
@@ -120,6 +119,17 @@ public class Analyseur {
         }
     }
 
+    public boolean isDigit(){
+        for (Character nb : arrayOfNb){
+            if (CARLU == nb){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
     public T_UNILEX RECO_SYMB(){
         try{
             switch(CARLU)
@@ -153,17 +163,7 @@ public class Analyseur {
     }
 
 
-    /**
-     * unités lexicales
-     */
-    public boolean isDigit(){
-        for (Character nb : arrayOfNb){
-            if (CARLU == nb){
-                return true;
-            }
-        }
-        return false;
-    }
+
 
 
 }

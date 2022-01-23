@@ -11,14 +11,6 @@ public class Main {
         // chargement du programme (fichier texte)
         Analyseur analyseur = new Analyseur(new File("src/JeuxEssais/test"));
 
-
-
-
-        // SAUTER_SEPARATEUR:
-        // if char == ( ou { ou <
-        // while (c != ) ou } ou > )
-            // LIRE_CAR
-
     }
 
 }
