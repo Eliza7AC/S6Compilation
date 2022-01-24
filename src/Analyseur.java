@@ -12,7 +12,6 @@ public class Analyseur {
     final private int LONG_MAX_CHAINE = 50;
     final private int NB_MOTS_RESERVES = 7;
     final private int MAXINT = Integer.MAX_VALUE;
-    char[] arrayOfNb = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
     public File SOURCE;
     public Scanner sc;
@@ -22,12 +21,13 @@ public class Analyseur {
     public Integer NOMBRE = null; // dernier nbre lu
     public String CHAINE = null; // dernier identificateur, mot-clé, ... lu
     public boolean SCANNING_STRING = false;
+    public boolean SCANNING_IDENT_OU_MOT_RESERVE = false;
     public ArrayList<String> TABLE_MOTS_RESERVES;
 
     public int NUM_LIGNE; // num ligne lue pour ERREUR
     public int CARLU_INDEX; // num char lu pour ERREUR
     public ArrayList<String> ERREURS = new ArrayList<String>(Arrays.asList(
-            "null", "fin de fichier atteinte", "NOMBRE > MAXINT", "erreur symbole","erreur RECO CHAINE"
+            "null", "fin de fichier atteinte", "NOMBRE > MAXINT", "erreur symbole","erreur LONGUEUR CHAINE"
     ));
 
 
@@ -145,7 +145,8 @@ public class Analyseur {
      * reconnaissances d'unités lexicales
      ************************************/
     public T_UNILEX RECO_ENTIER(){
-        if (isDigit()){
+
+        if (Character.isDigit(CARLU) && !SCANNING_STRING){
 
             try{
                 if (NOMBRE == null){ // toute première fois
@@ -159,6 +160,7 @@ public class Analyseur {
                 ERREUR(2);
             }
 //            AFFICHE_CARLU()
+            System.out.println(NOMBRE);
             return T_UNILEX.ent;
 
         }
@@ -168,19 +170,11 @@ public class Analyseur {
         }
     }
 
-    public boolean isDigit(){
-        for (Character nb : arrayOfNb){
-            if (CARLU == nb){
-                return true;
-            }
-        }
-        return false;
-    }
 
     // TODO
     public T_UNILEX RECO_CHAINE(){
 
-        System.out.print(CARLU =='\'');
+//        System.out.print(CARLU =='\'');
         System.out.println(" | " + CARLU + " / CHAINE = " + CHAINE );
 
             try{
@@ -211,6 +205,35 @@ public class Analyseur {
 
     // TODO
     public T_UNILEX RECO_IDENT_OU_MOT_RESERVE(){
+
+//            try{
+//                if(CARLU_INDEX == 0){
+//                    CHAINE = "";
+//                }
+//                if (Character.isLetter(CARLU) && !SCANNING_IDENT_OU_MOT_RESERVE){ // début de chaine
+//                    SCANNING_IDENT_OU_MOT_RESERVE = true;
+//                    CHAINE = "";
+//                    return null;
+//                }
+//                else if (Character.isLetter(CARLU) && SCANNING_IDENT_OU_MOT_RESERVE){ // milieu de chaine
+//                    CHAINE = CHAINE + String.valueOf(CARLU);
+//                    if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
+//                    return null;
+//                }
+//                else if (CARLU == ' ' && SCANNING_IDENT_OU_MOT_RESERVE){ // fin de chaine
+//                    SCANNING_IDENT_OU_MOT_RESERVE = false;
+//                    if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
+//
+//                    System.out.println(CHAINE + " :------- MOT CLEF RECONNU : " + TABLE_MOTS_RESERVES.contains(CHAINE));
+//
+////                    AFFICHE_CARLU();
+//                    return T_UNILEX.ch;
+//                }
+//
+//            } catch (Exception e){
+//                ERREUR(4);
+//            }
+
         return null;
     }
 
