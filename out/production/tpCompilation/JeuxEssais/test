@@ -1,4 +1,5 @@
 DEBUT
     ECRIRE('BONJOUR');
+    LIRE('IL A DIT 'SALUT'!');
     123567
 FIN
