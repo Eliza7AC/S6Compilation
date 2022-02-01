@@ -249,10 +249,7 @@ public class Analyseur {
 //                    AFFICHE_CARLU();
 
                         // todo
-                        if (CHAINE == "VAR" && identificateurs.CHERCHER(CHAINE) == -1){
-                            identificateurs.INSERER(CHAINE,T_IDENT.variable);
-                        }
-                        if ()
+                        identificateurs.INSERER(CHAINE,null);
                         return T_UNILEX.ident;
                     }
                 }
