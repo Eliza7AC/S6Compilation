@@ -16,12 +16,13 @@ public class Analyseur {
     public File SOURCE;
     public Scanner sc;
     public char CARLU; // dernier char lu
+    public char CARLU_SEPARATEUR;
     public char NEXT_CARLU;
 
-    public Integer NOMBRE = null; // dernier nbre lu
-    public String CHAINE = null; // dernier identificateur, mot-clé, ... lu
-    public boolean SCANNING_STRING = false;
-    public boolean SCANNING_IDENT_OU_MOT_RESERVE = false;
+    public Integer NOMBRE; // dernier nbre lu
+    public String CHAINE; // dernier identificateur, mot-clé, ... lu
+    public boolean SCANNING_STRING;
+    public boolean SCANNING_IDENT_OU_MOT_RESERVE;
     public ArrayList<String> TABLE_MOTS_RESERVES;
 
     public int NUM_LIGNE; // num ligne lue pour ERREUR
@@ -92,10 +93,9 @@ public class Analyseur {
 
 //                    System.out.println(CARLU + " AT INDEX " + CARLU_INDEX + " | " + NEXT_CARLU );
 
-                    RECO_ENTIER();
-                    RECO_CHAINE();
-                    RECO_IDENT_OU_MOT_RESERVE();
-                    RECO_SYMB();
+
+                    ANALEX();
+
 
 
                 } // fin ligne
@@ -122,18 +122,33 @@ public class Analyseur {
 
 
     // TODO
-//    public void SAUTER_SEPARATEUR() throws FileNotFoundException {
-//        if (CARLU == ' '){
+    public boolean SAUTER_SEPARATEUR() {
+        if (CARLU == ' ' && !SCANNING_STRING && !SCANNING_IDENT_OU_MOT_RESERVE){
 //            System.out.println("ceci est un espace ->" + CARLU + "<-");
-//        } else {
-//            LIRE_CAR();
-//        }
-//    }
+            return true; //continue
+        }
+        else if (CARLU == '{'){
+            CARLU_SEPARATEUR = CARLU;
+        }
+        else if (CARLU_SEPARATEUR == '{' && CARLU != '}'){
+            return true; //continue
+        }
+        else if (CARLU_SEPARATEUR == '{' && CARLU == '}') {
+            CARLU_SEPARATEUR = '\0';
+            return true;
+        }
+        return false;
+    }
 
 
     // TODO
     public void ANALEX(){
-
+        if (!SAUTER_SEPARATEUR()){
+            RECO_ENTIER();
+            RECO_CHAINE();
+            if (!SCANNING_STRING) { RECO_IDENT_OU_MOT_RESERVE(); }
+            RECO_SYMB();
+        }
     }
 
 
@@ -206,35 +221,42 @@ public class Analyseur {
     // TODO
     public T_UNILEX RECO_IDENT_OU_MOT_RESERVE(){
 
-//            try{
-//                if(CARLU_INDEX == 0){
-//                    CHAINE = "";
-//                }
-//                if (Character.isLetter(CARLU) && !SCANNING_IDENT_OU_MOT_RESERVE){ // début de chaine
-//                    SCANNING_IDENT_OU_MOT_RESERVE = true;
-//                    CHAINE = "";
-//                    return null;
-//                }
-//                else if (Character.isLetter(CARLU) && SCANNING_IDENT_OU_MOT_RESERVE){ // milieu de chaine
-//                    CHAINE = CHAINE + String.valueOf(CARLU);
-//                    if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
-//                    return null;
-//                }
-//                else if (CARLU == ' ' && SCANNING_IDENT_OU_MOT_RESERVE){ // fin de chaine
-//                    SCANNING_IDENT_OU_MOT_RESERVE = false;
-//                    if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
-//
-//                    System.out.println(CHAINE + " :------- MOT CLEF RECONNU : " + TABLE_MOTS_RESERVES.contains(CHAINE));
-//
-////                    AFFICHE_CARLU();
-//                    return T_UNILEX.ch;
-//                }
-//
-//            } catch (Exception e){
-//                ERREUR(4);
-//            }
+            try{
+                if(CARLU_INDEX == 0){
+                    CHAINE = "";
+                }
+                if (Character.isLetter(CARLU) && !SCANNING_IDENT_OU_MOT_RESERVE){ // début de chaine
+                    SCANNING_IDENT_OU_MOT_RESERVE = true;
+                    CHAINE = "";
+                }
+                if (Character.isLetter(CARLU) && SCANNING_IDENT_OU_MOT_RESERVE){ // milieu de chaine
+                    CHAINE = CHAINE + String.valueOf(CARLU);
+                    if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
+                    return null;
+                }
+                else if (!Character.isLetter(CARLU) && SCANNING_IDENT_OU_MOT_RESERVE){ // fin de chaine
+                    SCANNING_IDENT_OU_MOT_RESERVE = false;
+                    if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
+
+                    if (TABLE_MOTS_RESERVES.contains(CHAINE)) {
+                        System.out.println(CHAINE + " :------- MOT CLEF RECONNU : ");
+                        return T_UNILEX.motcle;
+                    } else {
+//                    AFFICHE_CARLU();
+                        return T_UNILEX.ident;
+                    }
+                }
+
+            } catch (Exception e){
+                ERREUR(4);
+            }
 
         return null;
+    }
+
+    public boolean EST_UN_MOT_RESERVE() {
+        
+        return false;
     }
 
 

@@ -1,6 +1,6 @@
 { VAR nb; }
 DEBUT
-    ECRIRE('Entrez un nombre entiez');
+    ECRIRE('Entrez un nombre entier');
     { LIRE(nb); }
     { nb := nb*nb; }
     { ECRIRE(); }
