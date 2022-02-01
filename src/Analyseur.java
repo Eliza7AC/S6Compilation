@@ -2,6 +2,7 @@ import org.w3c.dom.ls.LSOutput;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static java.lang.Character.getNumericValue;
@@ -31,12 +32,15 @@ public class Analyseur {
             "null", "fin de fichier atteinte", "NOMBRE > MAXINT", "erreur symbole","erreur LONGUEUR CHAINE"
     ));
 
+    public Identificateur identificateurs;
+
 
     Analyseur(File file) throws FileNotFoundException {
 
         INITIALISER(file);
         LIRE_CAR();
         TERMINER();
+        identificateurs.AFFICHE_TABLE_IDENT();
     }
 
 
@@ -243,6 +247,12 @@ public class Analyseur {
                         return T_UNILEX.motcle;
                     } else {
 //                    AFFICHE_CARLU();
+
+                        // todo
+                        if (CHAINE == "VAR" && identificateurs.CHERCHER(CHAINE) == -1){
+                            identificateurs.INSERER(CHAINE,T_IDENT.variable);
+                        }
+                        if ()
                         return T_UNILEX.ident;
                     }
                 }
