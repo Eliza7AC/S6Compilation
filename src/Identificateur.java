@@ -2,11 +2,10 @@ import java.util.ArrayList;
 
 public class Identificateur<T> {
 
-    public ArrayList<Identificateur> identificateurs;
+    public ArrayList<Identificateur> identificateurs = new ArrayList<>();
 
     String nom;
     T_IDENT type;
-
 
 
     Integer adresse;
@@ -16,6 +15,8 @@ public class Identificateur<T> {
         this.nom = nom;
         this.type = type;
     }
+
+    public Identificateur() {}
 
     /** variable */
 //    public Identificateur(T_IDENT type, Integer adresse) {
@@ -45,7 +46,9 @@ public class Identificateur<T> {
     }
 
     public void AFFICHE_TABLE_IDENT(){
-        System.out.println(this.identificateurs.toString());
+        for (Identificateur id : identificateurs) {
+            System.out.println("Nom: "+id.nom+"\n"+"Type: "+id.type);
+        }
     }
 
 

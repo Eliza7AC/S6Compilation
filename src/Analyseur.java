@@ -1,8 +1,5 @@
-import org.w3c.dom.ls.LSOutput;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static java.lang.Character.getNumericValue;
@@ -28,11 +25,11 @@ public class Analyseur {
 
     public int NUM_LIGNE; // num ligne lue pour ERREUR
     public int CARLU_INDEX; // num char lu pour ERREUR
-    public ArrayList<String> ERREURS = new ArrayList<String>(Arrays.asList(
-            "null", "fin de fichier atteinte", "NOMBRE > MAXINT", "erreur symbole","erreur LONGUEUR CHAINE"
-    ));
+//    public ArrayList<String> ERREURS = new ArrayList<String>(Arrays.asList(
+//            "null", "fin de fichier atteinte", "NOMBRE > MAXINT", "erreur symbole","erreur LONGUEUR CHAINE"
+//    ));
 
-    public Identificateur identificateurs;
+    public Identificateur IDENTIFICATEURS = new Identificateur<>();
 
 
     Analyseur(File file) throws FileNotFoundException {
@@ -40,7 +37,7 @@ public class Analyseur {
         INITIALISER(file);
         LIRE_CAR();
         TERMINER();
-        identificateurs.AFFICHE_TABLE_IDENT();
+        IDENTIFICATEURS.AFFICHE_TABLE_IDENT();
     }
 
 
@@ -112,10 +109,21 @@ public class Analyseur {
 
 
     public void ERREUR(int nbError){
-        System.out.println(
-            "erreur n°" + nbError + " [ ligne " + NUM_LIGNE +
-            " char " + CARLU_INDEX + " ] message: " + ERREURS.get(nbError)
-        );
+        switch (nbError) {
+            case 0:
+                System.out.println("Erreur 0: null");
+            case 1:
+                System.out.println("Erreur 1: Fin de fichier atteinte");
+                return;
+            case 2:
+                System.out.println("Erreur 2: NOMBRE > MAXINT");
+            case 3:
+                System.out.println("Erreur 3: Erreur symbole");
+            case 4:
+                System.out.println("Erreur 4: Erreur longueur de chaine");
+        }
+
+        System.out.println("Erreur à la ligne "+ NUM_LIGNE +" char " + CARLU_INDEX);
         System.exit(-1);
     }
 
@@ -148,10 +156,10 @@ public class Analyseur {
     // TODO
     public void ANALEX(){
         if (!SAUTER_SEPARATEUR()){
+            RECO_SYMB();
             RECO_ENTIER();
             RECO_CHAINE();
             if (!SCANNING_STRING) { RECO_IDENT_OU_MOT_RESERVE(); }
-            RECO_SYMB();
         }
     }
 
@@ -184,8 +192,8 @@ public class Analyseur {
 
         }
         else { // pour repartir à 0 pour le prochain nombre
-        NOMBRE = null;
-        return null;
+            NOMBRE = null;
+            return null;
         }
     }
 
@@ -215,8 +223,7 @@ public class Analyseur {
                     return T_UNILEX.ch;
                 }
 
-            } catch (Exception e){
-                ERREUR(4);
+            } catch (Exception e){ ERREUR(4);
             }
             return null;
     }
@@ -233,12 +240,14 @@ public class Analyseur {
                     SCANNING_IDENT_OU_MOT_RESERVE = true;
                     CHAINE = "";
                 }
-                if (Character.isLetter(CARLU) && SCANNING_IDENT_OU_MOT_RESERVE){ // milieu de chaine
+                if ((Character.isLetter(CARLU) || Character.isDigit(CARLU) || CARLU == '_')
+                        && SCANNING_IDENT_OU_MOT_RESERVE){ // milieu de chaine
                     CHAINE = CHAINE + String.valueOf(CARLU);
                     if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
                     return null;
                 }
-                else if (!Character.isLetter(CARLU) && SCANNING_IDENT_OU_MOT_RESERVE){ // fin de chaine
+                else if (!(Character.isLetter(CARLU) || Character.isDigit(CARLU) || CARLU == '_')
+                        && SCANNING_IDENT_OU_MOT_RESERVE){ // fin de chaine
                     SCANNING_IDENT_OU_MOT_RESERVE = false;
                     if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
 
@@ -249,12 +258,13 @@ public class Analyseur {
 //                    AFFICHE_CARLU();
 
                         // todo
-                        identificateurs.INSERER(CHAINE,null);
+                        IDENTIFICATEURS.INSERER(CHAINE,null);
                         return T_UNILEX.ident;
                     }
                 }
 
             } catch (Exception e){
+                e.printStackTrace();
                 ERREUR(4);
             }
 
