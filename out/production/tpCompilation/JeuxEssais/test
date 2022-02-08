@@ -2,6 +2,6 @@ VAR nb;
 DEBUT
     ECRIRE('BONJOUR');
     LIRE('IL A DIT "SALUT"!!');
-    123567
-    78
+    VAR nb_ = 123567;
+    VAR nbc = 78;
 FIN

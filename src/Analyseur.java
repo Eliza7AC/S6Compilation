@@ -252,11 +252,11 @@ public class Analyseur {
                     if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
 
                     if (TABLE_MOTS_RESERVES.contains(CHAINE)) {
-                        System.out.println(CHAINE + " :------- MOT CLEF RECONNU : ");
+                        System.out.println("MOT CLEF RECONNU : " + CHAINE);
                         return T_UNILEX.motcle;
                     } else {
 //                    AFFICHE_CARLU();
-
+                        System.out.println("IDENT RECONNU : " + CHAINE);
                         // todo
                         IDENTIFICATEURS.INSERER(CHAINE,null);
                         return T_UNILEX.ident;
