@@ -1,316 +1,291 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
-
-import static java.lang.Character.getNumericValue;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Scanner;
 
 public class Analyseur {
-
     final private int LONG_MAX_IDENT = 20;
     final private int LONG_MAX_CHAINE = 50;
     final private int NB_MOTS_RESERVES = 7;
     final private int MAXINT = Integer.MAX_VALUE;
 
-    public File SOURCE;
-    public Scanner sc;
-    public char CARLU; // dernier char lu
-    public char CARLU_SEPARATEUR;
-    public char NEXT_CARLU;
+    private File SOURCE;
+    private Scanner sc;
+    private boolean EOF; // Fin du fichier ouvert (permet d'arrêter ANALEX())
+    private String STR_LINE; // Ligne actuelle lu dans LIRE_CAR()
+    private char[] CHAR_LINE; // STR_LINE en tableau de char
 
-    public Integer NOMBRE; // dernier nbre lu
-    public String CHAINE; // dernier identificateur, mot-clé, ... lu
-    public boolean SCANNING_STRING;
-    public boolean SCANNING_IDENT_OU_MOT_RESERVE;
-    public ArrayList<String> TABLE_MOTS_RESERVES;
+    private char CARLU; // dernier char lu
+    private char NEXT_CARLU; // char après CARLU
 
-    public int NUM_LIGNE; // num ligne lue pour ERREUR
-    public int CARLU_INDEX; // num char lu pour ERREUR
-//    public ArrayList<String> ERREURS = new ArrayList<String>(Arrays.asList(
-//            "null", "fin de fichier atteinte", "NOMBRE > MAXINT", "erreur symbole","erreur LONGUEUR CHAINE"
-//    ));
+    private int NOMBRE; // dernier nombre lu
+    private String CHAINE; // dernier identificateur, mot-clé, ... lu
+    private ArrayList<String> TABLE_MOTS_RESERVES;
 
-    public Identificateur IDENTIFICATEURS = new Identificateur<>();
+    private int NUM_LIGNE; // num ligne lue pour ERREUR
+    private int CARLU_INDEX; // num char lu pour ERREUR
 
-
-    Analyseur(File file) throws FileNotFoundException {
-
+    public Analyseur(File file) {
         INITIALISER(file);
-        LIRE_CAR();
+        ANALEX();
         TERMINER();
-        IDENTIFICATEURS.AFFICHE_TABLE_IDENT();
+        Identificateur.AFFICHE_TABLE_IDENT();
     }
 
 
-    /**************
-     * procédures
-     **************/
 
-    public void INITIALISER(File file) throws FileNotFoundException {
+    /*************************************************
+     * Procédures
+     *************************************************/
+
+
+    /**
+     * Initialisation du début de programme
+     * @param file Fichier source
+     */
+    public void INITIALISER(File file) {
         SOURCE = file;
-        sc = new Scanner(SOURCE);
+        try {
+            sc = new Scanner(SOURCE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         NUM_LIGNE = 0;
-
-        TABLE_MOTS_RESERVES= new ArrayList<String>(
+        TABLE_MOTS_RESERVES= new ArrayList<>(
                 Arrays.asList("CONST", "DEBUT", "ECRIRE", "FIN", "LIRE", "PROGRAMME", "VAR")
         );
-
     }
 
-    public void TERMINER(){
+    /**
+     * Instructions de fin de programme
+     */
+    public void TERMINER() {
         sc.close();
         SOURCE = null;
     }
 
+    /**
+     * Insère un mot clé réservé dans la table de mots réservés
+     * @param motClef Nom du mot réservé
+     */
     public void INSERE_TABLE_MOTS_RESERVES(String motClef){
         TABLE_MOTS_RESERVES.add(motClef);
         Collections.sort(TABLE_MOTS_RESERVES);
     }
 
-    public void LIRE_CAR() throws FileNotFoundException {
-//        Scanner sc = new Scanner(SOURCE);
-//        NUM_LIGNE = 0;
-
-        try{
-            // scan line by line
-            while (sc.hasNextLine()){
-                NUM_LIGNE++; // à chaque nouvelle ligne
+    /**
+     * Lit un caractère provenant du fichier source
+     */
+    public void LIRE_CAR() {
+        if (STR_LINE == null || CARLU_INDEX == CHAR_LINE.length) {
+            if (sc.hasNextLine()) {
+                STR_LINE = sc.nextLine();
+                CHAR_LINE = STR_LINE.toCharArray();
+                NUM_LIGNE++;
                 CARLU_INDEX = 0;
-
-                String strLine = sc.nextLine();
-                char[] charLine = strLine.toCharArray();
-
-                // scan char by char inside the line
-                int j;
-                for (int i = 0; i < charLine.length; i++) {
-                    CARLU_INDEX++;
-                    CARLU = charLine[i];
-
-
-                    int charLineEnd = charLine.length-1;
-                    if (i+1 <= charLineEnd){
-                        j = i+1; // char suivant
-                        NEXT_CARLU = charLine[j];
-                    }
-
-//                    System.out.println(CARLU + " AT INDEX " + CARLU_INDEX + " | " + NEXT_CARLU );
-
-
-                    ANALEX();
-
-
-
-                } // fin ligne
-            } // fin fichier
-        } catch (Exception e){
-            ERREUR(0); // erreur en scannant
+            }
+            else {
+                ERREUR(1); // Fin de fichier atteinte
+                return;
+            }
         }
-        ERREUR(1); // erreur si fin fichier
+        CARLU = CHAR_LINE[CARLU_INDEX];
+        CARLU_INDEX++;
+
+        if (CARLU_INDEX <= CHAR_LINE.length - 1) {
+            NEXT_CARLU = CHAR_LINE[CARLU_INDEX];
+        }
+        else {
+            NEXT_CARLU = '\0';
+        }
     }
 
-
+    /**
+     * Recensement des messages d'erreur
+     * @param nbError Numéro de l'erreur
+     */
     public void ERREUR(int nbError){
         switch (nbError) {
             case 0:
-                System.out.println("Erreur 0: null");
+                System.out.println("Erreur 0: Erreur inconnue");
+                break;
             case 1:
                 System.out.println("Erreur 1: Fin de fichier atteinte");
-                return;
+                EOF = true;
+                return; // Exécution des procédures de fin de programme
             case 2:
                 System.out.println("Erreur 2: NOMBRE > MAXINT");
+                break;
             case 3:
-                System.out.println("Erreur 3: Erreur symbole");
-            case 4:
-                System.out.println("Erreur 4: Erreur longueur de chaine");
+                System.out.println("Erreur 3: Erreur longueur de chaine");
+                break;
         }
-
-        System.out.println("Erreur à la ligne "+ NUM_LIGNE +" char " + CARLU_INDEX);
+        System.out.println("Erreur à la ligne "+ NUM_LIGNE +" caractère " + CARLU_INDEX);
         System.exit(-1);
     }
 
-    public void AFFICHE_CARLU(){
-        System.out.println(CARLU);
-    }
-
-
-
-    // TODO
+    /**
+     * Lit le prochain caractère tant que CARLU est dans un commentaire ou si CARLU est un séparateur
+     * @return true lorsque CARLU est un séparateur ou le dernier caractère d'un commentaire
+     */
     public boolean SAUTER_SEPARATEUR() {
-        if (CARLU == ' ' && !SCANNING_STRING && !SCANNING_IDENT_OU_MOT_RESERVE){
-//            System.out.println("ceci est un espace ->" + CARLU + "<-");
-            return true; //continue
+        if (CARLU == ' ') {
+            return true;
         }
-        else if (CARLU == '{'){
-            CARLU_SEPARATEUR = CARLU;
-        }
-        else if (CARLU_SEPARATEUR == '{' && CARLU != '}'){
-            return true; //continue
-        }
-        else if (CARLU_SEPARATEUR == '{' && CARLU == '}') {
-            CARLU_SEPARATEUR = '\0';
+        else if (CARLU == '{') {
+            do {
+                LIRE_CAR();
+            } while (CARLU != '}');
             return true;
         }
         return false;
     }
 
 
-    // TODO
+
+    /*************************************************
+     * Fonctions de reconnaissance d'unités lexicales
+     *************************************************/
+
+
+    /**
+     * Noyau de l'analyseur lexical
+     */
     public void ANALEX(){
-        if (!SAUTER_SEPARATEUR()){
-            RECO_SYMB();
-            RECO_ENTIER();
-            RECO_CHAINE();
-            if (!SCANNING_STRING) { RECO_IDENT_OU_MOT_RESERVE(); }
-        }
-    }
-
-
-
-
-
-
-    /************************************
-     * reconnaissances d'unités lexicales
-     ************************************/
-    public T_UNILEX RECO_ENTIER(){
-
-        if (Character.isDigit(CARLU) && !SCANNING_STRING){
-
-            try{
-                if (NOMBRE == null){ // toute première fois
-                    NOMBRE = getNumericValue(CARLU);
-                }
-                else{ // incrémentation de l'entiereté du nombre char by char
-                    NOMBRE = Integer.valueOf(String.valueOf(NOMBRE) + String.valueOf(CARLU));
-//                    System.out.println(NOMBRE);
-                }
-            } catch (Exception e){
-                ERREUR(2);
-            }
-//            AFFICHE_CARLU()
-            System.out.println(NOMBRE);
-            return T_UNILEX.ent;
-
-        }
-        else { // pour repartir à 0 pour le prochain nombre
-            NOMBRE = null;
-            return null;
-        }
-    }
-
-
-    // TODO
-    public T_UNILEX RECO_CHAINE(){
-
-//        System.out.print(CARLU =='\'');
-        System.out.println(" | " + CARLU + " / CHAINE = " + CHAINE );
-
-            try{
-                if (CARLU == '\'' && !SCANNING_STRING){ // début de chaine
-                    SCANNING_STRING = true;
-                    CHAINE = "";
-                    return null;
-                }
-                else if (CARLU != '\'' && SCANNING_STRING){ // milieu de chaine
-                    CHAINE = CHAINE + String.valueOf(CARLU);
-                    if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
-                    return null;
-                }
-                else if (CARLU == '\'' && SCANNING_STRING){ // fin de chaine
-                    SCANNING_STRING = false;
-                    if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
-
-//                    AFFICHE_CARLU();
-                    return T_UNILEX.ch;
-                }
-
-            } catch (Exception e){ ERREUR(4);
-            }
-            return null;
-    }
-
-
-    // TODO
-    public T_UNILEX RECO_IDENT_OU_MOT_RESERVE(){
-
-            try{
-                if(CARLU_INDEX == 0){
-                    CHAINE = "";
-                }
-                if (Character.isLetter(CARLU) && !SCANNING_IDENT_OU_MOT_RESERVE){ // début de chaine
-                    SCANNING_IDENT_OU_MOT_RESERVE = true;
-                    CHAINE = "";
-                }
-                if ((Character.isLetter(CARLU) || Character.isDigit(CARLU) || CARLU == '_')
-                        && SCANNING_IDENT_OU_MOT_RESERVE){ // milieu de chaine
-                    CHAINE = CHAINE + String.valueOf(CARLU);
-                    if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
-                    return null;
-                }
-                else if (!(Character.isLetter(CARLU) || Character.isDigit(CARLU) || CARLU == '_')
-                        && SCANNING_IDENT_OU_MOT_RESERVE){ // fin de chaine
-                    SCANNING_IDENT_OU_MOT_RESERVE = false;
-                    if (CHAINE.length() > LONG_MAX_CHAINE) { ERREUR(4); }
-
-                    if (TABLE_MOTS_RESERVES.contains(CHAINE)) {
-                        System.out.println("MOT CLEF RECONNU : " + CHAINE);
-                        return T_UNILEX.motcle;
-                    } else {
-//                    AFFICHE_CARLU();
-                        System.out.println("IDENT RECONNU : " + CHAINE);
-                        // todo
-                        IDENTIFICATEURS.INSERER(CHAINE,null);
-                        return T_UNILEX.ident;
+        LIRE_CAR();
+        while (!EOF) {
+            if (!SAUTER_SEPARATEUR()) {
+                if (RECO_ENTIER() == null) {
+                    if (RECO_CHAINE() == null) {
+                        if (RECO_IDENT_OU_MOT_RESERVE() == null) {
+                            if (RECO_SYMB() == null) {
+                                ERREUR(0);
+                            }
+                        }
                     }
                 }
-
-            } catch (Exception e){
-                e.printStackTrace();
-                ERREUR(4);
             }
-
-        return null;
+            LIRE_CAR();
+        }
     }
 
-    public boolean EST_UN_MOT_RESERVE() {
-        
-        return false;
-    }
-
-
-    public T_UNILEX RECO_SYMB(){
-        try{
-            switch(CARLU)
-            {
-                case ';': return T_UNILEX.ptvirg;
-                case '.': return T_UNILEX.point;
-                case '=': return T_UNILEX.eg;
-                case '+': return T_UNILEX.plus;
-                case '-': return T_UNILEX.moins;
-                case '*': return T_UNILEX.mult;
-                case '/': return T_UNILEX.divi;
-                case '(': return T_UNILEX.parouv;
-                case ')': return T_UNILEX.parfer;
-                case '<':
-                    if (NEXT_CARLU == '='){ return T_UNILEX.infe; } // <=
-                    if (NEXT_CARLU == '>'){ return T_UNILEX.diff; } // <>
-                    if (NEXT_CARLU != '=' && NEXT_CARLU != '>'){return T_UNILEX.inf;} // <
-
-                case '>':
-                    if (NEXT_CARLU == '='){return T_UNILEX.supe; } // >=
-                    if (NEXT_CARLU != '='){ return T_UNILEX.sup; } // >
-
-                case ':':
-                    if (NEXT_CARLU == '='){ return T_UNILEX.aff; } // :=
-                    if (NEXT_CARLU != '='){ return T_UNILEX.deuxpts; } // :
+    /**
+     * Lit le prochain caractère tant que CARLU forme un nombre entier
+     * @return T_UNILEX.ent si nombre entier
+     */
+    public T_UNILEX RECO_ENTIER(){
+        if (Character.isDigit(CARLU)) {
+            NOMBRE = Character.getNumericValue(CARLU);
+            while (Character.isDigit(NEXT_CARLU)) {
+                LIRE_CAR();
+                NOMBRE = Integer.parseInt(Integer.toString(NOMBRE) + Character.getNumericValue(CARLU));
+                if (NOMBRE >= MAXINT) {
+                    ERREUR(2);
+                }
             }
-        } catch (Exception e){
-            ERREUR(3);
+            System.out.println("NOMBRE: "+NOMBRE);
+            return T_UNILEX.ent;
         }
         return null;
     }
 
 
+    /**
+     * Lit le prochain caractère tant que CARLU forme une chaîne de caractère
+     * @return T_UNILEX.ch si chaîne de caractère
+     */
+    public T_UNILEX RECO_CHAINE(){
+        if (CARLU == '\'') {
+            CHAINE = "";
+            while (true) {
+                LIRE_CAR();
+                if (CARLU != '\'') {
+                    CHAINE = CHAINE + CARLU;
+                    if (CHAINE.length() > LONG_MAX_CHAINE) {
+                        ERREUR(3);
+                    }
+                } else {
+                    if (NEXT_CARLU == '\'') {
+                        CHAINE = CHAINE + CARLU;
+                        if (CHAINE.length() > LONG_MAX_CHAINE) {
+                            ERREUR(3);
+                        }
+                        LIRE_CAR(); // Saute NEXT_CARLU pour la prochaine itération
+                    } else break;
+                }
+            }
+            System.out.println("CHAINE: "+CHAINE);
+            return T_UNILEX.ch;
+        }
+        return null;
+    }
 
+    /**
+     * Lit le prochain caractère et détermine si CARLU forme un mot clé réservé ou un identificateur
+     * @return T_UNILEX.motcle si mot clé réservé ou T_UNILEX.ident si identificateur
+     */
+    public T_UNILEX RECO_IDENT_OU_MOT_RESERVE(){
+        if (Character.isLetter(CARLU)) {
+            CHAINE = Character.toString(CARLU);
+            while (Character.isLetter(NEXT_CARLU) || Character.isDigit(NEXT_CARLU) || NEXT_CARLU == '_') {
+                LIRE_CAR();
+                if (CHAINE.length() < LONG_MAX_IDENT) { // Si la longueur de la chaine est supérieure à la longueur maximale, on ignore les caractères superflus
+                    CHAINE = CHAINE + CARLU;
+                }
+            }
+            CHAINE = CHAINE.toUpperCase();
+            if (TABLE_MOTS_RESERVES.contains(CHAINE)) {
+                System.out.println("MOT CLEF RECONNU : " + CHAINE);
+                return T_UNILEX.motcle;
+            }
+            System.out.println("IDENT RECONNU : " + CHAINE);
+            Identificateur.INSERER(CHAINE, null);
+            return T_UNILEX.ident;
+        }
+        return null;
+    }
 
-
+    /**
+     * Lit le prochain caractère et détermine si CARLU est un symbole
+     * @return T_UNILEX correspondant à un symbole
+     */
+    public T_UNILEX RECO_SYMB(){
+        switch(CARLU) {
+            case ',': return T_UNILEX.virg;
+            case ';': return T_UNILEX.ptvirg;
+            case '.': return T_UNILEX.point;
+            case '=': return T_UNILEX.eg;
+            case '+': return T_UNILEX.plus;
+            case '-': return T_UNILEX.moins;
+            case '*': return T_UNILEX.mult;
+            case '/': return T_UNILEX.divi;
+            case '(': return T_UNILEX.parouv;
+            case ')': return T_UNILEX.parfer;
+            case '<':
+                if (NEXT_CARLU == '=') {
+                    LIRE_CAR(); // Saute NEXT_CARLU pour la prochaine itération
+                    return T_UNILEX.infe;
+                }
+                if (NEXT_CARLU == '>') {
+                    LIRE_CAR(); // Saute NEXT_CARLU pour la prochaine itération
+                    return T_UNILEX.diff;
+                }
+                return T_UNILEX.inf;
+            case '>':
+                if (NEXT_CARLU == '=') {
+                    LIRE_CAR(); // Saute NEXT_CARLU pour la prochaine itération
+                    return T_UNILEX.supe;
+                }
+                return T_UNILEX.sup;
+            case ':':
+                if (NEXT_CARLU == '=') {
+                    LIRE_CAR(); // Saute NEXT_CARLU pour la prochaine itération
+                    return T_UNILEX.aff;
+                }
+                return T_UNILEX.deuxpts;
+        }
+        return null;
+    }
 }

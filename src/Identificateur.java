@@ -1,56 +1,54 @@
-import java.util.ArrayList;
+import java.util.*;
 
-public class Identificateur<T> {
+public class Identificateur {
+    public static final List<Identificateur> TABLE_IDENT_ARRAY = new ArrayList<>();
 
-    public ArrayList<Identificateur> identificateurs = new ArrayList<>();
-
-    String nom;
-    T_IDENT type;
-
-
-    Integer adresse;
-    T valeur;
+    private final String nom;
+    private final T_IDENT type;
+    private final Map<String, Object> properties = new HashMap<>();
 
     public Identificateur(String nom, T_IDENT type) {
         this.nom = nom;
         this.type = type;
     }
 
-    public Identificateur() {}
-
-    /** variable */
-//    public Identificateur(T_IDENT type, Integer adresse) {
-//        this.type = type;
-//        this.adresse = adresse;
-//    }
-
-    /** constante */
-//    public Identificateur(T_IDENT type, T valeur) {
-//        this.type = type;
-//        this.valeur = valeur;
-//    }
-
-    public int CHERCHER(String identificateurCherche){
-        for (int i = 0; i < identificateurs.size(); i++) {
-            if (identificateurs.get(i).equals(identificateurCherche)){
-                return i;
-            }
-        }
-        return -1;
+    /**
+     * Cherche dans la table des identificateurs si un identificateur existe
+     * @param id Nom de l'identificateur
+     * @return L'indice de l'identificateur dans la table
+     */
+    public static int CHERCHER(String id) {
+        return Collections.binarySearch(TABLE_IDENT_ARRAY, new Identificateur(id, null), Comparator.comparing(Identificateur::getNom));
     }
 
-    public int INSERER(String nom, T_IDENT type){
+    /**
+     * Insère un identificateur dans la table des identificateurs
+     * @param nom Nom de l'identificateur
+     * @param type Type T_IDENT de l'identificateur
+     * @return L'indice de l'identificateur dans la table
+     */
+    public static int INSERER(String nom, T_IDENT type) {
         Identificateur id = new Identificateur(nom, type);
-        identificateurs.add(id);
-        return identificateurs.size();
+        TABLE_IDENT_ARRAY.add(id);
+        TABLE_IDENT_ARRAY.sort(Comparator.comparing(Identificateur::getNom));
+        return Identificateur.CHERCHER(nom);
     }
 
-    public void AFFICHE_TABLE_IDENT(){
-        for (Identificateur id : identificateurs) {
+    /**
+     * Affiche la table des identificateurs
+     */
+    public static void AFFICHE_TABLE_IDENT() {
+        for (Identificateur id : TABLE_IDENT_ARRAY) {
             System.out.println("Nom: "+id.nom+"\n"+"Type: "+id.type);
+            System.out.println("Propriétés: ");
+            for (String key : id.properties.keySet()) {
+                System.out.println(key+ " "+id.properties.get(key));
+            }
+            System.out.println();
         }
     }
 
-
-
+    private String getNom() {
+        return nom;
+    }
 }

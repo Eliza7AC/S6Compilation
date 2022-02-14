@@ -1,7 +1,7 @@
 VAR nb;
 DEBUT
     ECRIRE('BONJOUR');
-    LIRE('IL A DIT "SALUT"!!');
-    VAR nb_ = 123567;
-    VAR nbc = 78;
+    LIRE('L''origami, j''adore!!');
+    123567
+    78
 FIN
