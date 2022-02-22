@@ -13,7 +13,7 @@ public class Analyseur {
 
     private File SOURCE;
     private Scanner sc;
-    private boolean EOF; // Fin du fichier ouvert (permet d'arrêter ANALEX())
+    private boolean EOF;
     private String STR_LINE; // Ligne actuelle lu dans LIRE_CAR()
     private char[] CHAR_LINE; // STR_LINE en tableau de char
 
@@ -87,6 +87,7 @@ public class Analyseur {
                 CARLU_INDEX = 0;
             }
             else {
+                EOF = true;
                 ERREUR(1); // Fin de fichier atteinte
                 return;
             }
@@ -106,15 +107,14 @@ public class Analyseur {
      * Recensement des messages d'erreur
      * @param nbError Numéro de l'erreur
      */
-    public void ERREUR(int nbError){
+    public void ERREUR(int nbError) {
         switch (nbError) {
             case 0:
                 System.out.println("Erreur 0: Erreur inconnue");
                 break;
             case 1:
                 System.out.println("Erreur 1: Fin de fichier atteinte");
-                EOF = true;
-                return; // Exécution des procédures de fin de programme
+                return;
             case 2:
                 System.out.println("Erreur 2: NOMBRE > MAXINT");
                 break;
@@ -137,7 +137,7 @@ public class Analyseur {
         else if (CARLU == '{') {
             do {
                 LIRE_CAR();
-            } while (CARLU != '}');
+            } while (CARLU != '}' && !EOF);
             return true;
         }
         return false;
@@ -153,19 +153,20 @@ public class Analyseur {
     /**
      * Noyau de l'analyseur lexical
      */
-    public void ANALEX(){
+    public void ANALEX() {
         LIRE_CAR();
+        T_UNILEX ret;
         while (!EOF) {
             if (!SAUTER_SEPARATEUR()) {
-                if (RECO_ENTIER() == null) {
-                    if (RECO_CHAINE() == null) {
-                        if (RECO_IDENT_OU_MOT_RESERVE() == null) {
-                            if (RECO_SYMB() == null) {
+                if ((ret = RECO_ENTIER()) == null) {
+                    if ((ret = RECO_CHAINE()) == null) {
+                        if ((ret = RECO_IDENT_OU_MOT_RESERVE()) == null) {
+                            if ((ret = RECO_SYMB()) == null) {
                                 ERREUR(0);
-                            }
-                        }
-                    }
-                }
+                            } else System.out.println(ret);
+                        } else System.out.println(ret);
+                    } else System.out.println(ret);
+                } else System.out.println(ret);
             }
             LIRE_CAR();
         }
@@ -185,7 +186,6 @@ public class Analyseur {
                     ERREUR(2);
                 }
             }
-            System.out.println("NOMBRE: "+NOMBRE);
             return T_UNILEX.ent;
         }
         return null;
@@ -216,7 +216,6 @@ public class Analyseur {
                     } else break;
                 }
             }
-            System.out.println("CHAINE: "+CHAINE);
             return T_UNILEX.ch;
         }
         return null;
@@ -237,10 +236,8 @@ public class Analyseur {
             }
             CHAINE = CHAINE.toUpperCase();
             if (TABLE_MOTS_RESERVES.contains(CHAINE)) {
-                System.out.println("MOT CLEF RECONNU : " + CHAINE);
                 return T_UNILEX.motcle;
             }
-            System.out.println("IDENT RECONNU : " + CHAINE);
             Identificateur.INSERER(CHAINE, null);
             return T_UNILEX.ident;
         }

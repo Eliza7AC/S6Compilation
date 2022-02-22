@@ -2,6 +2,10 @@ VAR nb;
 DEBUT
     ECRIRE('BONJOUR');
     LIRE('L''origami, j''adore!!');
-    123567
+    { commentaire }
+    x := 123567
+    <>
+    =
     78
 FIN
+{

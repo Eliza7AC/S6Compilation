@@ -4,7 +4,7 @@ public class Identificateur {
     public static final List<Identificateur> TABLE_IDENT_ARRAY = new ArrayList<>();
 
     private final String nom;
-    private final T_IDENT type;
+    private T_IDENT type;
     private final Map<String, Object> properties = new HashMap<>();
 
     public Identificateur(String nom, T_IDENT type) {
@@ -28,16 +28,20 @@ public class Identificateur {
      * @return L'indice de l'identificateur dans la table
      */
     public static int INSERER(String nom, T_IDENT type) {
-        Identificateur id = new Identificateur(nom, type);
-        TABLE_IDENT_ARRAY.add(id);
-        TABLE_IDENT_ARRAY.sort(Comparator.comparing(Identificateur::getNom));
-        return Identificateur.CHERCHER(nom);
+        if (CHERCHER(nom) < 0) {
+            Identificateur id = new Identificateur(nom, type);
+            TABLE_IDENT_ARRAY.add(id);
+            TABLE_IDENT_ARRAY.sort(Comparator.comparing(Identificateur::getNom));
+            return Identificateur.CHERCHER(nom);
+        }
+        return -1;
     }
 
     /**
      * Affiche la table des identificateurs
      */
     public static void AFFICHE_TABLE_IDENT() {
+        System.out.println("TABLE DES IDENTIFICATEUR");
         for (Identificateur id : TABLE_IDENT_ARRAY) {
             System.out.println("Nom: "+id.nom+"\n"+"Type: "+id.type);
             System.out.println("Propriétés: ");
