@@ -5,35 +5,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Scanner;
 
-public class Analyseur {
-    final private int LONG_MAX_IDENT = 20;
-    final private int LONG_MAX_CHAINE = 50;
-    final private int NB_MOTS_RESERVES = 7;
-    final private int MAXINT = Integer.MAX_VALUE;
+public class AnalyseurLexical {
+    private static int LONG_MAX_IDENT = 20;
+    private static int LONG_MAX_CHAINE = 50;
+    private static int NB_MOTS_RESERVES = 7;
+    private static int MAXINT = Integer.MAX_VALUE;
 
-    private File SOURCE;
-    private Scanner sc;
-    private boolean EOF;
-    private String STR_LINE; // Ligne actuelle lu dans LIRE_CAR()
-    private char[] CHAR_LINE; // STR_LINE en tableau de char
+    private static File SOURCE;
+    private static Scanner sc;
+    private static String STR_LINE; // Ligne actuelle lu dans LIRE_CAR()
+    private static char[] CHAR_LINE; // STR_LINE en tableau de char
 
-    private char CARLU; // dernier char lu
-    private char NEXT_CARLU; // char après CARLU
+    private static char CARLU; // dernier char lu
+    private static char NEXT_CARLU; // char après CARLU
 
-    private int NOMBRE; // dernier nombre lu
-    private String CHAINE; // dernier identificateur, mot-clé, ... lu
-    private ArrayList<String> TABLE_MOTS_RESERVES;
+    public static int NOMBRE; // dernier nombre lu
+    public static String CHAINE; // dernier identificateur, mot-clé, ... lu
+    public static boolean EOF; // fin de fichier
+    private static ArrayList<String> TABLE_MOTS_RESERVES;
 
-    private int NUM_LIGNE; // num ligne lue pour ERREUR
-    private int CARLU_INDEX; // num char lu pour ERREUR
-
-    public Analyseur(File file) {
-        INITIALISER(file);
-        ANALEX();
-        TERMINER();
-        Identificateur.AFFICHE_TABLE_IDENT();
-    }
-
+    private static int NUM_LIGNE; // num ligne lue pour ERREUR
+    private static int CARLU_INDEX; // num char lu pour ERREUR
 
 
     /*************************************************
@@ -45,7 +37,7 @@ public class Analyseur {
      * Initialisation du début de programme
      * @param file Fichier source
      */
-    public void INITIALISER(File file) {
+    public static void INITIALISER(File file) {
         SOURCE = file;
         try {
             sc = new Scanner(SOURCE);
@@ -61,7 +53,7 @@ public class Analyseur {
     /**
      * Instructions de fin de programme
      */
-    public void TERMINER() {
+    public static void TERMINER() {
         sc.close();
         SOURCE = null;
     }
@@ -70,7 +62,7 @@ public class Analyseur {
      * Insère un mot clé réservé dans la table de mots réservés
      * @param motClef Nom du mot réservé
      */
-    public void INSERE_TABLE_MOTS_RESERVES(String motClef){
+    public static void INSERE_TABLE_MOTS_RESERVES(String motClef){
         TABLE_MOTS_RESERVES.add(motClef);
         Collections.sort(TABLE_MOTS_RESERVES);
     }
@@ -78,7 +70,7 @@ public class Analyseur {
     /**
      * Lit un caractère provenant du fichier source
      */
-    public void LIRE_CAR() {
+    public static void LIRE_CAR() {
         if (STR_LINE == null || CARLU_INDEX == CHAR_LINE.length) {
             if (sc.hasNextLine()) {
                 STR_LINE = sc.nextLine();
@@ -107,7 +99,7 @@ public class Analyseur {
      * Recensement des messages d'erreur
      * @param nbError Numéro de l'erreur
      */
-    public void ERREUR(int nbError) {
+    public static void ERREUR(int nbError) {
         switch (nbError) {
             case 0:
                 System.out.println("Erreur 0: Erreur inconnue");
@@ -121,6 +113,9 @@ public class Analyseur {
             case 3:
                 System.out.println("Erreur 3: Erreur longueur de chaine");
                 break;
+            case 4:
+                System.out.println("Erreur 4: Erreur syntaxique");
+                break;
         }
         System.out.println("Erreur à la ligne "+ NUM_LIGNE +" caractère " + CARLU_INDEX);
         System.exit(-1);
@@ -128,19 +123,24 @@ public class Analyseur {
 
     /**
      * Lit le prochain caractère tant que CARLU est dans un commentaire ou si CARLU est un séparateur
-     * @return true lorsque CARLU est un séparateur ou le dernier caractère d'un commentaire
      */
-    public boolean SAUTER_SEPARATEUR() {
-        if (CARLU == ' ') {
-            return true;
-        }
-        else if (CARLU == '{') {
-            do {
+    public static void SAUTER_SEPARATEUR() {
+        do {
+            if (CARLU == '{') {
+                int nb = 1;
+                while (nb != 0 && (NEXT_CARLU != '\0' || sc.hasNextLine())) {
+                    LIRE_CAR();
+                    if (CARLU == '}') nb--;
+                    if (CARLU == '{') nb++;
+                }
                 LIRE_CAR();
-            } while (CARLU != '}' && !EOF);
-            return true;
-        }
-        return false;
+            }
+            if (CARLU == ' ') {
+                while (CARLU == ' ') {
+                    LIRE_CAR();
+                }
+            }
+        } while (CARLU == '{');
     }
 
 
@@ -153,30 +153,28 @@ public class Analyseur {
     /**
      * Noyau de l'analyseur lexical
      */
-    public void ANALEX() {
+    public static T_UNILEX ANALEX() {
         LIRE_CAR();
-        T_UNILEX ret;
-        while (!EOF) {
-            if (!SAUTER_SEPARATEUR()) {
-                if ((ret = RECO_ENTIER()) == null) {
-                    if ((ret = RECO_CHAINE()) == null) {
-                        if ((ret = RECO_IDENT_OU_MOT_RESERVE()) == null) {
-                            if ((ret = RECO_SYMB()) == null) {
-                                ERREUR(0);
-                            } else System.out.println(ret);
-                        } else System.out.println(ret);
-                    } else System.out.println(ret);
-                } else System.out.println(ret);
-            }
-            LIRE_CAR();
-        }
+        T_UNILEX t_unilex;
+        SAUTER_SEPARATEUR();
+        if (EOF) return null;
+            if ((t_unilex = RECO_ENTIER()) == null) {
+                if ((t_unilex = RECO_CHAINE()) == null) {
+                    if ((t_unilex = RECO_IDENT_OU_MOT_RESERVE()) == null) {
+                        if ((t_unilex = RECO_SYMB()) == null) {
+                            ERREUR(0);
+                        } else return t_unilex;
+                    } else return t_unilex;
+                } else return t_unilex;
+            } else return t_unilex;
+        return null;
     }
 
     /**
      * Lit le prochain caractère tant que CARLU forme un nombre entier
      * @return T_UNILEX.ent si nombre entier
      */
-    public T_UNILEX RECO_ENTIER(){
+    public static T_UNILEX RECO_ENTIER(){
         if (Character.isDigit(CARLU)) {
             NOMBRE = Character.getNumericValue(CARLU);
             while (Character.isDigit(NEXT_CARLU)) {
@@ -196,7 +194,7 @@ public class Analyseur {
      * Lit le prochain caractère tant que CARLU forme une chaîne de caractère
      * @return T_UNILEX.ch si chaîne de caractère
      */
-    public T_UNILEX RECO_CHAINE(){
+    public static T_UNILEX RECO_CHAINE(){
         if (CARLU == '\'') {
             CHAINE = "";
             while (true) {
@@ -225,7 +223,7 @@ public class Analyseur {
      * Lit le prochain caractère et détermine si CARLU forme un mot clé réservé ou un identificateur
      * @return T_UNILEX.motcle si mot clé réservé ou T_UNILEX.ident si identificateur
      */
-    public T_UNILEX RECO_IDENT_OU_MOT_RESERVE(){
+    public static T_UNILEX RECO_IDENT_OU_MOT_RESERVE(){
         if (Character.isLetter(CARLU)) {
             CHAINE = Character.toString(CARLU);
             while (Character.isLetter(NEXT_CARLU) || Character.isDigit(NEXT_CARLU) || NEXT_CARLU == '_') {
@@ -248,7 +246,7 @@ public class Analyseur {
      * Lit le prochain caractère et détermine si CARLU est un symbole
      * @return T_UNILEX correspondant à un symbole
      */
-    public T_UNILEX RECO_SYMB(){
+    public static T_UNILEX RECO_SYMB(){
         switch(CARLU) {
             case ',': return T_UNILEX.virg;
             case ';': return T_UNILEX.ptvirg;

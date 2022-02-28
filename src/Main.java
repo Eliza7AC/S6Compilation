@@ -5,10 +5,13 @@ import static java.lang.Character.getNumericValue;
 public class Main {
 
     public static void main(String[] args) {
-
-        // chargement du programme (fichier texte)
-        Analyseur analyseur = new Analyseur(new File("src/JeuxEssais/test"));
-
+        /**
+         * Programme principal pour l'Analyseur Lexical
+         */
+        AnalyseurLexical.INITIALISER(new File("src/JeuxEssais/test"));
+        AnalyseurSyntaxique.ANASYNT();
+        AnalyseurLexical.TERMINER();
+        Identificateur.AFFICHE_TABLE_IDENT();
     }
 
 }

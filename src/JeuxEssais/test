@@ -1,11 +1,10 @@
+PROGRAMME test;
 VAR nb;
+{ Ceci {est} un test }
 DEBUT
     ECRIRE('BONJOUR');
-    LIRE('L''origami, j''adore!!');
+    LIRE(test);
+    ECRIRE('L''origami, j''adore!!');
     { commentaire }
     x := 123567
-    <>
-    =
-    78
-FIN
-{
+FIN.
