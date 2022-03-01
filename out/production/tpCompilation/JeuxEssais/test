@@ -1,4 +1,5 @@
 PROGRAMME test;
+CONST y = 'Oui';
 VAR nb;
 { Ceci {est} un test }
 DEBUT

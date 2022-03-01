@@ -5,11 +5,12 @@ public class Identificateur {
 
     private final String nom;
     private T_IDENT type;
-    private final Map<String, Object> properties = new HashMap<>();
+    private Map<String, Object> properties;
 
-    public Identificateur(String nom, T_IDENT type) {
+    public Identificateur(String nom, T_IDENT type, Map<String, Object> properties) {
         this.nom = nom;
         this.type = type;
+        this.properties = properties;
     }
 
     /**
@@ -18,7 +19,7 @@ public class Identificateur {
      * @return L'indice de l'identificateur dans la table
      */
     public static int CHERCHER(String id) {
-        return Collections.binarySearch(TABLE_IDENT_ARRAY, new Identificateur(id, null), Comparator.comparing(Identificateur::getNom));
+        return Collections.binarySearch(TABLE_IDENT_ARRAY, new Identificateur(id, null, null), Comparator.comparing(Identificateur::getNom));
     }
 
     /**
@@ -27,9 +28,14 @@ public class Identificateur {
      * @param type Type T_IDENT de l'identificateur
      * @return L'indice de l'identificateur dans la table
      */
-    public static int INSERER(String nom, T_IDENT type) {
+    public static int INSERER(String nom, T_IDENT type, Map<String, Object> properties) {
         if (CHERCHER(nom) < 0) {
-            Identificateur id = new Identificateur(nom, type);
+            Identificateur id = new Identificateur(nom, type, properties);
+            if (properties != null) {
+                for (String propertyKey: properties.keySet()) {
+                    id.addProperty(propertyKey, properties.get(propertyKey));
+                }
+            }
             TABLE_IDENT_ARRAY.add(id);
             TABLE_IDENT_ARRAY.sort(Comparator.comparing(Identificateur::getNom));
             return Identificateur.CHERCHER(nom);
@@ -50,6 +56,10 @@ public class Identificateur {
             }
             System.out.println();
         }
+    }
+
+    public void addProperty(String nom, Object value) {
+        properties.put(nom, value);
     }
 
     private String getNom() {

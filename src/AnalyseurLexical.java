@@ -236,7 +236,7 @@ public class AnalyseurLexical {
             if (TABLE_MOTS_RESERVES.contains(CHAINE)) {
                 return T_UNILEX.motcle;
             }
-            Identificateur.INSERER(CHAINE, null);
+            Identificateur.INSERER(CHAINE, null, null);
             return T_UNILEX.ident;
         }
         return null;

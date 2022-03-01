@@ -1,5 +1,5 @@
 public class AnalyseurSyntaxique {
-    private static T_UNILEX UNILEX;
+    public static T_UNILEX UNILEX;
 
     /**
      * Noyau de l'Analyseur Syntaxique
@@ -70,101 +70,60 @@ public class AnalyseurSyntaxique {
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("CONST")) {
             UNILEX = AnalyseurLexical.ANALEX();
             if (UNILEX == T_UNILEX.ident) {
+                String NOM_CONSTANTE = AnalyseurLexical.CHAINE;
                 UNILEX = AnalyseurLexical.ANALEX();
                 if (UNILEX == T_UNILEX.eg) {
                     UNILEX = AnalyseurLexical.ANALEX();
-                    if (UNILEX == T_UNILEX.ent) {
-                        fin = false;
-                        erreurEnt = false;
-                        erreurEg = false;
-                        erreurIdent = false;
-                        UNILEX = AnalyseurLexical.ANALEX();
-                        do {
-                            if (UNILEX == T_UNILEX.virg) {
-                                UNILEX = AnalyseurLexical.ANALEX();
-                                if (UNILEX == T_UNILEX.ident) {
+                    if (UNILEX == T_UNILEX.ent || UNILEX == T_UNILEX.ch) {
+                        if (AnalyseurSemantique.DEFINIR_CONSTANTE(NOM_CONSTANTE, UNILEX)) {
+                            fin = true;
+                            UNILEX = AnalyseurLexical.ANALEX();
+                            do {
+                                if (UNILEX == T_UNILEX.virg) {
                                     UNILEX = AnalyseurLexical.ANALEX();
-                                    if (UNILEX == T_UNILEX.eg) {
+                                    if (UNILEX == T_UNILEX.ident) {
+                                        NOM_CONSTANTE = AnalyseurLexical.CHAINE;
                                         UNILEX = AnalyseurLexical.ANALEX();
-                                        if (UNILEX == T_UNILEX.ent) {
+                                        if (UNILEX == T_UNILEX.eg) {
                                             UNILEX = AnalyseurLexical.ANALEX();
+                                            if (UNILEX == T_UNILEX.ent || UNILEX == T_UNILEX.ch) {
+                                                if (AnalyseurSemantique.DEFINIR_CONSTANTE(NOM_CONSTANTE, UNILEX)) {
+                                                    UNILEX = AnalyseurLexical.ANALEX();
+                                                    fin = true;
+                                                } else {
+                                                    fin = false;
+                                                }
+                                            } else {
+                                                fin = false;
+                                            }
                                         } else {
-                                            fin = true;
-                                            erreurEnt = true;
+                                            fin = false;
                                         }
                                     } else {
-                                        fin = true;
-                                        erreurEg = true;
+                                        fin = false;
                                     }
                                 } else {
-                                    fin = true;
-                                    erreurIdent = true;
+                                    fin = false;
                                 }
-                            } else {
-                                fin = true;
-                            }
-                        } while (!fin);
-                        if (erreurEnt) {
-                            System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: entier attendu");
-                            return false;
-                        } else if (erreurEg) {
-                            System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: = attendu");
-                            return false;
-                        } else if (erreurIdent) {
-                            System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: identificateur attendu");
-                            return false;
-                        } else if (UNILEX == T_UNILEX.ptvirg) {
-                            UNILEX = AnalyseurLexical.ANALEX();
-                            return true;
-                        } else {
-                            System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: ; attendu");
-                            return false;
-                        }
-                    } else if (UNILEX == T_UNILEX.ch) {
-                        fin = false;
-                        erreurEnt = false;
-                        erreurEg = false;
-                        erreurIdent = false;
-                        UNILEX = AnalyseurLexical.ANALEX();
-                        do {
-                            if (UNILEX == T_UNILEX.virg) {
+                            } while (!fin);
+                            if (true) {
+                                System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: entier ou chaine attendu");
+                                return false;
+                            } else if (true) {
+                                System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: = attendu");
+                                return false;
+                            } else if (true) {
+                                System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: identificateur attendu");
+                                return false;
+                            } else if (UNILEX == T_UNILEX.ptvirg) {
                                 UNILEX = AnalyseurLexical.ANALEX();
-                                if (UNILEX == T_UNILEX.ident) {
-                                    UNILEX = AnalyseurLexical.ANALEX();
-                                    if (UNILEX == T_UNILEX.eg) {
-                                        UNILEX = AnalyseurLexical.ANALEX();
-                                        if (UNILEX == T_UNILEX.ch) {
-                                            UNILEX = AnalyseurLexical.ANALEX();
-                                        } else {
-                                            fin = true;
-                                            erreurEnt = true;
-                                        }
-                                    } else {
-                                        fin = true;
-                                        erreurEg = true;
-                                    }
-                                } else {
-                                    fin = true;
-                                    erreurIdent = true;
-                                }
+                                return true;
                             } else {
-                                fin = true;
+                                System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: ; attendu");
+                                return false;
                             }
-                        } while (!fin);
-                        if (erreurEnt) {
-                            System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: chaine attendu");
-                            return false;
-                        } else if (erreurEg) {
-                            System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: = attendu");
-                            return false;
-                        } else if (erreurIdent) {
-                            System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: identificateur attendu");
-                            return false;
-                        } else if (UNILEX == T_UNILEX.ptvirg) {
-                            UNILEX = AnalyseurLexical.ANALEX();
-                            return true;
                         } else {
-                            System.out.println("Erreur syntaxique dans une instruction de déclaration de constante: ; attendu");
+                            System.out.println("Erreur sémantique dans la déclaration des constante: identificateur déjà déclaré");
                             return false;
                         }
                     } else {
