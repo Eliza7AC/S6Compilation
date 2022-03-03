@@ -10,7 +10,7 @@ public class Identificateur {
     public Identificateur(String nom, T_IDENT type, Map<String, Object> properties) {
         this.nom = nom;
         this.type = type;
-        this.properties = properties;
+        this.properties = Objects.requireNonNullElseGet(properties, HashMap::new);
     }
 
     /**
@@ -31,11 +31,6 @@ public class Identificateur {
     public static int INSERER(String nom, T_IDENT type, Map<String, Object> properties) {
         if (CHERCHER(nom) < 0) {
             Identificateur id = new Identificateur(nom, type, properties);
-            if (properties != null) {
-                for (String propertyKey: properties.keySet()) {
-                    id.addProperty(propertyKey, properties.get(propertyKey));
-                }
-            }
             TABLE_IDENT_ARRAY.add(id);
             TABLE_IDENT_ARRAY.sort(Comparator.comparing(Identificateur::getNom));
             return Identificateur.CHERCHER(nom);
@@ -58,8 +53,12 @@ public class Identificateur {
         }
     }
 
-    public void addProperty(String nom, Object value) {
-        properties.put(nom, value);
+    public T_IDENT getType() {
+        return type;
+    }
+
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
     private String getNom() {

@@ -3,30 +3,37 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AnalyseurSemantique {
-    private static final ArrayList<String> VAL_DE_CONST_CHAINE = new ArrayList<>();
-    private static int NB_CONST_CHAINE = 0;
+    public static int DERNIERE_ADRESSE_VAR_GLOB;
 
     public static boolean DEFINIR_CONSTANTE(String nom, T_UNILEX ul) {
-        if (Identificateur.CHERCHER(AnalyseurLexical.CHAINE) > 0) {
-            System.out.println("ERREUR: identificateur déjà déclaré");
+        if (Identificateur.CHERCHER(nom) > 0) {
             return false;
         }
-        else if (AnalyseurSyntaxique.UNILEX == T_UNILEX.ent) {
-            Map<String, Object> properties = new HashMap<>();
+        Map<String, Object> properties = new HashMap<>();
+        if (ul == T_UNILEX.ent) {
             properties.put("typec", 0);
-            properties.put("val", AnalyseurLexical.CHAINE);
-            Identificateur.INSERER(AnalyseurLexical.CHAINE, T_IDENT.constante, properties);
-            return true;
-        } else if (AnalyseurSyntaxique.UNILEX == T_UNILEX.ch) {
-            Map<String, Object> properties = new HashMap<>();
+            properties.put("val", AnalyseurLexical.NOMBRE);
+            Identificateur.INSERER(nom, T_IDENT.constante, properties);
+
+        } else if (ul == T_UNILEX.ch) {
             properties.put("typec", 1);
-            Identificateur.INSERER(AnalyseurLexical.CHAINE, T_IDENT.constante, properties);
-            VAL_DE_CONST_CHAINE.add(NB_CONST_CHAINE, AnalyseurLexical.CHAINE);
+            properties.put("val", AnalyseurLexical.CHAINE);
+            Identificateur.INSERER(nom, T_IDENT.constante, properties);
         }
-        return false;
+        return true;
     }
 
-
+    public static boolean DEFINIR_VARIABLE(String nom) {
+        if (Identificateur.CHERCHER(nom) > 0) {
+            return false;
+        }
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("typec", 0);
+        DERNIERE_ADRESSE_VAR_GLOB++;
+        properties.put("val", DERNIERE_ADRESSE_VAR_GLOB);
+        Identificateur.INSERER(nom, T_IDENT.variable, properties);
+        return true;
+    }
 
 
 

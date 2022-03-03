@@ -21,11 +21,11 @@ public class AnalyseurLexical {
 
     public static int NOMBRE; // dernier nombre lu
     public static String CHAINE; // dernier identificateur, mot-clé, ... lu
-    public static boolean EOF; // fin de fichier
+    private static boolean EOF; // fin de fichier
     private static ArrayList<String> TABLE_MOTS_RESERVES;
 
-    private static int NUM_LIGNE; // num ligne lue pour ERREUR
-    private static int CARLU_INDEX; // num char lu pour ERREUR
+    public static int NUM_LIGNE; // num ligne lue pour ERREUR
+    public static int CARLU_INDEX; // num char lu pour ERREUR
 
 
     /*************************************************
@@ -48,6 +48,7 @@ public class AnalyseurLexical {
         TABLE_MOTS_RESERVES= new ArrayList<>(
                 Arrays.asList("CONST", "DEBUT", "ECRIRE", "FIN", "LIRE", "PROGRAMME", "VAR")
         );
+        AnalyseurSemantique.DERNIERE_ADRESSE_VAR_GLOB = -1;
     }
 
     /**
@@ -236,7 +237,7 @@ public class AnalyseurLexical {
             if (TABLE_MOTS_RESERVES.contains(CHAINE)) {
                 return T_UNILEX.motcle;
             }
-            Identificateur.INSERER(CHAINE, null, null);
+//            Identificateur.INSERER(CHAINE, null, null);
             return T_UNILEX.ident;
         }
         return null;

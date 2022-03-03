@@ -1,11 +1,10 @@
 PROGRAMME test;
-CONST y = 'Oui';
-VAR nb;
-{ Ceci {est} un test }
+CONST y = 'Oui', z = 124;
+VAR nb, gh;
 DEBUT
     ECRIRE('BONJOUR');
-    LIRE(test);
+    LIRE(nb);
     ECRIRE('L''origami, j''adore!!');
     { commentaire }
-    x := 123567
+    nb := z;
 FIN.
