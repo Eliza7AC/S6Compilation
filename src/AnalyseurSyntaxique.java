@@ -6,9 +6,7 @@ public class AnalyseurSyntaxique {
      */
     public static void ANASYNT() {
         UNILEX = AnalyseurLexical.ANALEX();
-        if (PROG()) {
-            System.out.println("Le programme source est syntaxiquement correct");
-        } else {
+        if (!PROG()) {
             AnalyseurLexical.ERREUR(4);
         }
     }
@@ -25,7 +23,6 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean PROG() {
-//        System.out.println("PROG");
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("PROGRAMME")) {
             UNILEX = AnalyseurLexical.ANALEX();
             if (UNILEX == T_UNILEX.ident) {
@@ -36,6 +33,7 @@ public class AnalyseurSyntaxique {
                     DECL_VAR();
                     if (BLOC()) {
                         if (UNILEX == T_UNILEX.point) {
+                            Generateur.GENCODE_PROG_FIN();
                             return true;
                         } else {
                             System.out.println("Erreur syntaxique dans une instruction de programme: . attendu");
@@ -65,7 +63,6 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean DECL_CONST() {
-//        System.out.println("DECL_CONST");
         boolean fin, erreurVal, erreurEg, erreurIdent;
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("CONST")) {
             UNILEX = AnalyseurLexical.ANALEX();
@@ -155,7 +152,6 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean DECL_VAR() {
-//        System.out.println("DECL_VAR");
         boolean fin, erreur;
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("VAR")) {
             UNILEX = AnalyseurLexical.ANALEX();
@@ -211,7 +207,6 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean BLOC() {
-//        System.out.println("BLOC");
         boolean fin;
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("DEBUT")) {
             UNILEX = AnalyseurLexical.ANALEX();
@@ -249,7 +244,6 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean INSTRUCTION() {
-//        System.out.println("INSTRUCTION");
         return AFFECTATION() || LECTURE() || ECRITURE() || BLOC();
     }
 
@@ -258,7 +252,6 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean AFFECTATION() {
-//        System.out.println("AFFECTATION");
         if (UNILEX == T_UNILEX.ident) {
             int index;
             if ((index = Identificateur.CHERCHER(AnalyseurLexical.CHAINE)) < 0) {
@@ -268,10 +261,12 @@ public class AnalyseurSyntaxique {
                 System.out.println("Erreur sémantique dans une instruction d'affectation: identificateur de type variable attendu");
                 return false;
             } else {
+                Generateur.GENCODE_AFFECTATION_IDENT();
                 UNILEX = AnalyseurLexical.ANALEX();
                 if (UNILEX == T_UNILEX.aff) {
                     UNILEX = AnalyseurLexical.ANALEX();
                      if(EXP()) {
+                         Generateur.GENCODE_AFFECTATION_AFFE();
                          return true;
                      } else {
                          System.out.println("Erreur sémantique dans une instruction d'affectation: erreur d'expression");
@@ -293,7 +288,6 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean LECTURE() {
-//        System.out.println("LECTURE");
         boolean fin, erreur;
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("LIRE")) {
             UNILEX = AnalyseurLexical.ANALEX();
@@ -308,6 +302,7 @@ public class AnalyseurSyntaxique {
                         System.out.println("Erreur sémantique dans une instruction de lecture: identificateur de type variable attendu");
                         return false;
                     } else {
+                        Generateur.GENCODE_LECTURE();
                         UNILEX = AnalyseurLexical.ANALEX();
                         fin = false;
                         erreur = false;
@@ -315,7 +310,16 @@ public class AnalyseurSyntaxique {
                             if (UNILEX == T_UNILEX.virg) {
                                 UNILEX = AnalyseurLexical.ANALEX();
                                 if (UNILEX == T_UNILEX.ident) {
-                                    UNILEX = AnalyseurLexical.ANALEX();
+                                    if ((index = Identificateur.CHERCHER(AnalyseurLexical.CHAINE)) < 0) {
+                                        System.out.println("Erreur sémantique dans une instruction de lecture: identificateur non déclaré");
+                                        return false;
+                                    } else if (Identificateur.TABLE_IDENT_ARRAY.get(index).getType() != T_IDENT.variable) {
+                                        System.out.println("Erreur sémantique dans une instruction de lecture: identificateur de type variable attendu");
+                                        return false;
+                                    } else {
+                                        Generateur.GENCODE_LECTURE();
+                                        UNILEX = AnalyseurLexical.ANALEX();
+                                    }
                                 } else {
                                     fin = true;
                                     erreur = true;
@@ -354,7 +358,6 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean ECRITURE() {
-//        System.out.println("ECRITURE");
         boolean fin, erreur;
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("ECRIRE")) {
             UNILEX = AnalyseurLexical.ANALEX();
@@ -362,7 +365,7 @@ public class AnalyseurSyntaxique {
                 UNILEX = AnalyseurLexical.ANALEX();
                 erreur = false;
                 if (ECR_EXP()) {
-                    UNILEX = AnalyseurLexical.ANALEX();
+//                    UNILEX = AnalyseurLexical.ANALEX();
                     fin = false;
                     do {
                         if (UNILEX == T_UNILEX.virg) {
@@ -375,6 +378,8 @@ public class AnalyseurSyntaxique {
                             fin = true;
                         }
                     } while (!fin);
+                } else {
+                    Generateur.GENCODE_ECRITURE();
                 }
                 if (erreur) {
                     System.out.println("Erreur syntaxique dans une instruction d'écriture: expression incorrecte");
@@ -401,10 +406,12 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean ECR_EXP() {
-//        System.out.println("ECR_EXP");
         if (EXP()) {
+            Generateur.GENCODE_ECR_EXP_EXP();
             return true;
         } else if (UNILEX == T_UNILEX.ch) {
+            Generateur.GENCODE_ECR_EXP_CH();
+            UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else {
 //            System.out.println("Erreur syntaxique dans une instruction d'écriture d'expression: chaine attendu");
@@ -417,7 +424,6 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean EXP() {
-//        System.out.println("EXP");
         return TERME() && SUITE_TERME();
     }
 
@@ -426,8 +432,17 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean SUITE_TERME() {
-//        System.out.println("SUITE_TERME");
-        return !OP_BIN() || EXP();
+        if (OP_BIN()) {
+            if (EXP()) {
+                Generateur.GENCODE_TERME_OP_BIN_EXP();
+                return true;
+            } else {
+                System.out.println("Erreur syntaxique dans une instruction de terme: terme après opérateur manquant");
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -435,8 +450,8 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean TERME() {
-//        System.out.println("TERME");
         if (UNILEX == T_UNILEX.ent) {
+            Generateur.GENCODE_TERME_ENT();
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else if (UNILEX == T_UNILEX.ident) {
@@ -451,6 +466,7 @@ public class AnalyseurSyntaxique {
                         return false;
                     }
                 }
+                Generateur.GENCODE_TERME_IDENT();
                 UNILEX = AnalyseurLexical.ANALEX();
                 return true;
             }
@@ -472,6 +488,7 @@ public class AnalyseurSyntaxique {
         } else if (UNILEX == T_UNILEX.moins) {
             UNILEX = AnalyseurLexical.ANALEX();
             if (TERME()) {
+                Generateur.GENCODE_TERME_MOINS();
                 UNILEX = AnalyseurLexical.ANALEX();
                 return true;
             } else {
@@ -489,44 +506,25 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean OP_BIN() {
-//        System.out.println("OP_BIN");
         if (UNILEX == T_UNILEX.plus) {
+            Generateur.GENCODE_OP_BIN(Generateur.ADDI);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else if (UNILEX == T_UNILEX.moins) {
+            Generateur.GENCODE_OP_BIN(Generateur.SOUS);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else if (UNILEX == T_UNILEX.mult) {
+            Generateur.GENCODE_OP_BIN(Generateur.MULT);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else if (UNILEX == T_UNILEX.divi) {
+            Generateur.GENCODE_OP_BIN(Generateur.DIV);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else {
 //            System.out.println("Erreur syntaxique dans une instruction d'opérateur: + ou - ou * ou / attendu");
             return false;
         }
-    }
-
-    public static void ERREUR_SYNTAXIQUE(int nbErreur) {
-        switch (nbErreur) {
-            case 1:
-
-        }
-        System.out.println("Erreur à la ligne "+ AnalyseurLexical.NUM_LIGNE +" caractère " + AnalyseurLexical.CARLU_INDEX);
-        System.exit(-1);
-    }
-
-    public static void ERREUR_SEMANTIQUE(int nbErreur) {
-        System.out.print("Erreur sémantique: ");
-        switch (nbErreur) {
-            case 1:
-                System.out.println("Identificateur non déclaré");
-                break;
-            case 2:
-
-        }
-        System.out.println("Erreur à la ligne "+ AnalyseurLexical.NUM_LIGNE +" caractère " + AnalyseurLexical.CARLU_INDEX);
-        System.exit(-1);
     }
 }

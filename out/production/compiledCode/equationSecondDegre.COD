@@ -1,0 +1,36 @@
+5 mot(s) réservé(s) pour les variables globales
+ECRC Résolution d'équation du second degré FINC
+ECRC Entrez a:  FINC
+EMPI 0
+LIRE
+ECRC Entrez b:  FINC
+EMPI 1
+LIRE
+ECRC Entrez c:  FINC
+EMPI 2
+LIRE
+ECRL
+EMPI 4
+EMPI 1
+CONT
+EMPI 1
+CONT
+MULT
+AFFE
+EMPI 3
+EMPI 4
+CONT
+EMPI 4
+EMPI 0
+CONT
+EMPI 2
+CONT
+MULT
+MULT
+ADDI
+AFFE
+ECRC Delta vaux:  FINC
+EMPI 3
+CONT
+ECRE
+STOP

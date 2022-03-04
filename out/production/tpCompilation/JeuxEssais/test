@@ -6,5 +6,6 @@ DEBUT
     LIRE(nb);
     ECRIRE('L''origami, j''adore!!');
     { commentaire }
-    nb := z;
+    nb := 2+3;
+    ECRIRE(nb);
 FIN.

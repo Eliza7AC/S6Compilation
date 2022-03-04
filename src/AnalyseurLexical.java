@@ -48,7 +48,6 @@ public class AnalyseurLexical {
         TABLE_MOTS_RESERVES= new ArrayList<>(
                 Arrays.asList("CONST", "DEBUT", "ECRIRE", "FIN", "LIRE", "PROGRAMME", "VAR")
         );
-        AnalyseurSemantique.DERNIERE_ADRESSE_VAR_GLOB = -1;
     }
 
     /**
@@ -73,22 +72,25 @@ public class AnalyseurLexical {
      */
     public static void LIRE_CAR() {
         if (STR_LINE == null || CARLU_INDEX == CHAR_LINE.length) {
-            if (sc.hasNextLine()) {
+            while (sc.hasNextLine()) {
                 STR_LINE = sc.nextLine();
-                CHAR_LINE = STR_LINE.toCharArray();
-                NUM_LIGNE++;
-                CARLU_INDEX = 0;
-            }
-            else {
-                EOF = true;
-                ERREUR(1); // Fin de fichier atteinte
-                return;
+                if (STR_LINE.length() != 0) {
+                    CHAR_LINE = STR_LINE.toCharArray();
+                    NUM_LIGNE++;
+                    CARLU_INDEX = 0;
+                    break;
+                }
+                if (!sc.hasNextLine()) {
+                    EOF = true;
+                    ERREUR(1); // Fin de fichier atteinte
+                    return;
+                }
             }
         }
         CARLU = CHAR_LINE[CARLU_INDEX];
         CARLU_INDEX++;
 
-        if (CARLU_INDEX <= CHAR_LINE.length - 1) {
+        if (CARLU_INDEX < CHAR_LINE.length) {
             NEXT_CARLU = CHAR_LINE[CARLU_INDEX];
         }
         else {

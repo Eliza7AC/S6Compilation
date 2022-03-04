@@ -1,0 +1,15 @@
+PROGRAMME equationSecondDegre;
+VAR a, b, c, delta, bSquare;
+DEBUT
+    ECRIRE('Résolution d''équation du second degré');
+    ECRIRE('Entrez a: ');
+    LIRE(a);
+    ECRIRE('Entrez b: ');
+    LIRE(b);
+    ECRIRE('Entrez c: ');
+    LIRE(c);
+    ECRIRE();
+    bSquare := b * b;
+    delta := bSquare + 4 * a * c;
+    ECRIRE('Delta vaut: ', delta);
+FIN.

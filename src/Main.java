@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Arrays;
 
 import static java.lang.Character.getNumericValue;
 
@@ -6,12 +7,12 @@ public class Main {
 
     public static void main(String[] args) {
         /**
-         * Programme principal pour l'Analyseur Lexical
+         * Programme principal
          */
-        AnalyseurLexical.INITIALISER(new File("src/JeuxEssais/test"));
-        AnalyseurSyntaxique.ANASYNT();
-        AnalyseurLexical.TERMINER();
-        Identificateur.AFFICHE_TABLE_IDENT();
+        File sourceCode = new File("src/JeuxEssais/equationSecondDegre");
+        Compilateur.compile(sourceCode);
+        Interpreteur.CREER_FICHIER_CODE(sourceCode.getName());
+        Interpreteur.INTERPRETER();
     }
 
 }

@@ -1,23 +1,14 @@
-import java.util.Objects;
+import java.io.File;
 
 public class Compilateur {
 
-//    Analyseur analyseur;
-//    Identificateur identificateurs;
-//
-//    public Compilateur(Analyseur analyseur, Identificateur identificateurs) {
-//        this.analyseur = analyseur;
-//        this.identificateurs = identificateurs;
-//    }
-//
-//    public void interpretation(){
-//
-//        for (String word : analyseur.getWords()){
-//
-//            if(identificateurs.getIdentificateurs().containsKey(word)){
-//                identificateurs.execute(word);
-//            }
-//
-//        }
-//    }
+    /**
+     * Compile le fichier source
+     * @param sourceCode fichier source
+     */
+    public static void compile(File sourceCode) {
+        AnalyseurLexical.INITIALISER(sourceCode);
+        AnalyseurSyntaxique.ANASYNT();
+        AnalyseurLexical.TERMINER();
+    }
 }
