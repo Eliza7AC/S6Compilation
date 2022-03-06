@@ -7,7 +7,7 @@ public class Interpreteur {
     private static final int[] MEMVAR = new int[500];
     public static final Stack<Integer> PILOP = new Stack<>();
     private static final Stack<Integer> PILEX = new Stack<>();
-    public static final int[] P_CODE = new int[1000];
+    public static final int[] P_CODE = new int[5000];
     public static int CO = 0;
 
     /**
@@ -126,8 +126,9 @@ public class Interpreteur {
         }
     }
 
+
     /*************************************************
-     * Instructions de la machine virtuelle
+     * Instructions de génération de code
      *************************************************/
 
     /**

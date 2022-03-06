@@ -1,18 +1,19 @@
 1 mot(s) réservé(s) pour les variables globales
 ECRC 'E''n''t''r''e''z'' ''u''n'' ''n''o''m''b''r''e' FINC
+ECRL
 EMPI 0
 LIRE
 EMPI 0
 CONT
 EMPI 0
 SOUS
-ALSN W
+ALSN X
 ECRC 'L''e'' ''r''é''s''u''l''t''a''t'' ''e''s''t'' ''d''i''f''f''é''r''e''n''t'' ''d''e'' ''z''é''r''o' FINC
 ECRL
 ECRC 'I''l'' ''e''s''t'' ''é''g''a''l'' ''à'' ' FINC
 EMPI 0
 CONT
 ECRE
-ALLE l
-W: ECRC 'L''e'' ''r''é''s''u''l''t''a''t'' ''e''s''t'' ''n''u''l' FINC
-l: STOP
+ALLE m
+X: ECRC 'L''e'' ''r''é''s''u''l''t''a''t'' ''e''s''t'' ''n''u''l' FINC
+m: STOP

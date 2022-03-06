@@ -1,7 +1,7 @@
 PROGRAMME test;
 VAR resultat;
 DEBUT
-    ECRIRE('Entrez un nombre');
+    ECRIRE('Entrez un nombre', '');
     LIRE(resultat);
     SI resultat >= 5 ALORS
     DEBUT
@@ -11,23 +11,36 @@ DEBUT
             ECRIRE();
             ECRIRE('Il est égal à: ', resultat);
             ECRIRE();
-            ECRIRE('Décrémentation de résultat jusqu''à 0');
-            ECRIRE();
             TANTQUE resultat <> 0 FAIRE
             DEBUT
-                ECRIRE('résultat vaut: ', resultat);
-                ECRIRE();
-                resultat := resultat - 1;
-                SI -1 >= (resultat + 1) ALORS
+                SI resultat >= 3 ALORS
                 DEBUT
-                    ECRIRE('Sortie de boucle imminente');
-                    ECRIRE();
+                    ECRIRE('Résultat vaut plus que 3', '');
+                    ECRIRE('Décrémentation de résultat jusqu''à 2', '');
+                    TANTQUE resultat >= 3 FAIRE
+                    DEBUT
+                        resultat := resultat - 1;
+                        ECRIRE(resultat, '');
+                    FIN
                 FIN
                 SINON
-                    ECRIRE('Pas encore sortie de boucle');
+                DEBUT
+                    resultat := resultat + 1;
+                    ECRIRE('Résultat après addition: ', resultat);
                     ECRIRE();
-            FIN;
-            ECRIRE('Sortie de boucle: résultat vaut:');
+                    resultat := resultat - 2;
+                    ECRIRE('Résultat après soustraction: ', resultat, '');
+                    SI 1 >= (resultat + 1) ALORS
+                    DEBUT
+                        ECRIRE('Sortie de boucle imminente');
+                        ECRIRE();
+                    FIN
+                    SINON
+                        ECRIRE('Pas encore sortie de boucle');
+                        ECRIRE();
+                FIN
+            FIN
+            ECRIRE('Sortie de boucle: résultat vaut: ');
             ECRIRE('0');
             ECRIRE();
         FIN

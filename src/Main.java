@@ -9,7 +9,7 @@ public class Main {
         /**
          * Programme principal
          */
-        File sourceCode = new File("src/JeuxEssais/equationSecondDegre");
+        File sourceCode = new File("src/JeuxEssais/testBoucles");
         Compilateur.compile(sourceCode);
         Interpreteur.CREER_FICHIER_CODE(sourceCode.getName());
         Interpreteur.INTERPRETER();

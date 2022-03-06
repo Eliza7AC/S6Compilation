@@ -1,6 +1,9 @@
 public class Generateur {
     private static int CO = 0;
 
+    /**
+     * Code des instructions de génération
+     */
     public static final int ADDI = 0;
     public static final int SOUS = 1;
     public static final int MULT = 2;
@@ -54,9 +57,9 @@ public class Generateur {
     }
 
     /**
-     * Génération du code lors d'une instruction d'écriture
+     * Génération du code d'un saut de ligne lors d'une instruction d'écriture
      */
-    public static void GENCODE_ECRITURE() {
+    public static void GENCODE_ECR_LN() {
         Interpreteur.P_CODE[CO] = Generateur.ECRL;
         CO++;
     }
@@ -90,8 +93,8 @@ public class Generateur {
     }
 
     /**
-     * Génération du code d'un opérateur
-     * @param code numéro de l'opérateur
+     * Génération du code d'une opérande
+     * @param code numéro de l'opérande
      */
     public static void GENCODE_OP_BIN(int code) {
         Interpreteur.PILOP.push(code);
@@ -107,7 +110,7 @@ public class Generateur {
     }
 
     /**
-     * Génération du code d'une identificateur lors d'une instruction de terme
+     * Génération du code d'un identificateur lors d'une instruction de terme
      */
     public static void GENCODE_TERME_IDENT() {
         Interpreteur.P_CODE[CO] = Generateur.EMPI;
@@ -134,9 +137,9 @@ public class Generateur {
     }
 
     /**
-     * Génération du code d'une expression suivi d'une instruction lors d'une instruction conditionnelle
+     * Génération du code d'une instruction lors d'une instruction conditionnelle
      */
-    public static void GENCODE_INST_COND_EXP_INST() {
+    public static void GENCODE_INST_COND_INST() {
         Interpreteur.P_CODE[Interpreteur.PILOP.pop()] = CO + 2;
         Interpreteur.P_CODE[CO] = Generateur.ALLE;
         Interpreteur.PILOP.push(CO + 1);
@@ -177,9 +180,9 @@ public class Generateur {
     }
 
     /**
-     * Obtenir le nom de la fonction à partir de son numéro
-     * @param code numéro de la fonction
-     * @return nom de la fonction
+     * Obtenir le nom de la fonction de génération à partir de son code
+     * @param code code de la fonction de génération
+     * @return nom de la fonction de génération
      */
     public static String getCodeName(int code) {
         switch (code) {

@@ -19,16 +19,8 @@ CONT
 MULT
 AFFE
 EMPI 3
-EMPI 4
-CONT
-EMPI 4
-EMPI 0
-CONT
-EMPI 2
-CONT
-MULT
-MULT
-SOUS
+EMPI 1
+MOIN
 AFFE
 ECRC 'D''e''l''t''a'' ''v''a''u''t'':'' ' FINC
 EMPI 3
@@ -39,7 +31,7 @@ EMPI 3
 CONT
 EMPI 0
 SOUS
-ALSN ų
+ALSN Ũ
 EMPI 3
 CONT
 EMPI 1
@@ -49,7 +41,7 @@ CONT
 EMPI 0
 SOUS
 DIV
-ALSN Ą
+ALSN ù
 ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''r''é''e''l''l''e''s'':' FINC
 ECRL
 ECRC 'r''1'' ''='' ''(' FINC
@@ -83,8 +75,8 @@ EMPI 0
 CONT
 MULT
 ECRE
-ALLE ű
-Ą: ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''c''o''m''p''l''e''x''e''s'':' FINC
+ALLE Ŧ
+ù: ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''c''o''m''p''l''e''x''e''s'':' FINC
 ECRL
 ECRC 'i''1'' ''='' ''(' FINC
 EMPI 1
@@ -119,8 +111,8 @@ EMPI 0
 CONT
 MULT
 ECRE
-ű: ALLE Ɵ
-ų: ECRC 'U''n''e'' ''s''e''u''l''e'' ''s''o''l''u''t''i''o''n'':' FINC
+Ŧ: ALLE Ɣ
+Ũ: ECRC 'U''n''e'' ''s''e''u''l''e'' ''s''o''l''u''t''i''o''n'':' FINC
 ECRL
 ECRC 'r''0'' ''='' ' FINC
 EMPI 1
@@ -133,4 +125,4 @@ EMPI 0
 CONT
 MULT
 ECRE
-Ɵ: STOP
+Ɣ: STOP

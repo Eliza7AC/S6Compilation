@@ -32,6 +32,7 @@ public class AnalyseurSyntaxique {
                     DECL_CONST();
                     DECL_VAR();
                     if (BLOC()) {
+                        UNILEX = AnalyseurLexical.ANALEX();
                         if (UNILEX == T_UNILEX.point) {
                             Generateur.GENCODE_PROG_FIN();
                             return true;
@@ -220,7 +221,7 @@ public class AnalyseurSyntaxique {
                     }
                 } while (!fin);
                 if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("FIN")) {
-                    UNILEX = AnalyseurLexical.ANALEX();
+                    UNILEX = T_UNILEX.ptvirg;
                     return true;
                 } else {
                     System.out.println("Erreur syntaxique dans un bloc d'instruction: mot-clé FIN attendu");
@@ -296,7 +297,8 @@ public class AnalyseurSyntaxique {
                 if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("ALORS")) {
                     UNILEX = AnalyseurLexical.ANALEX();
                     if (INST_COND() || INST_NON_COND()) {
-                        Generateur.GENCODE_INST_COND_EXP_INST();
+                        UNILEX = AnalyseurLexical.ANALEX();
+                        Generateur.GENCODE_INST_COND_INST();
                         fin = false;
                         erreur = false;
                         do {
@@ -456,6 +458,7 @@ public class AnalyseurSyntaxique {
                             UNILEX = AnalyseurLexical.ANALEX();
                             erreur = !ECR_EXP();
                             if (erreur) {
+                                System.out.println("HERE");
                                 fin = true;
                             }
                         } else {
@@ -463,7 +466,7 @@ public class AnalyseurSyntaxique {
                         }
                     } while (!fin);
                 } else {
-                    Generateur.GENCODE_ECRITURE();
+                    Generateur.GENCODE_ECR_LN();
                 }
                 if (erreur) {
                     System.out.println("Erreur syntaxique dans une instruction d'écriture: expression incorrecte");
@@ -493,7 +496,11 @@ public class AnalyseurSyntaxique {
             Generateur.GENCODE_ECR_EXP_EXP();
             return true;
         } else if (UNILEX == T_UNILEX.ch) {
-            Generateur.GENCODE_ECR_EXP_CH();
+            if (AnalyseurLexical.CHAINE.isEmpty()) {
+                Generateur.GENCODE_ECR_LN();
+            } else {
+                Generateur.GENCODE_ECR_EXP_CH();
+            }
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else {

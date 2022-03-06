@@ -6,7 +6,7 @@ DEBUT
     DEBUT
         ECRIRE(i, '');
         i := i-1;
-    FIN;
+    FIN
     ECRIRE('0');
     ECRIRE();
 FIN.

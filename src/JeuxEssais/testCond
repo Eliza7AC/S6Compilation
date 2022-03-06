@@ -1,7 +1,7 @@
 PROGRAMME testCond;
 VAR resultat;
 DEBUT
-    ECRIRE('Entrez un nombre');
+    ECRIRE('Entrez un nombre', '');
     LIRE(resultat);
     SI resultat <> 0 ALORS
         DEBUT
