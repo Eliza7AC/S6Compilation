@@ -1,0 +1,17 @@
+1 mot(s) réservé(s) pour les variables globales
+ECRC 'E''n''t''r''e''z'' ''u''n'' ''n''o''m''b''r''e'' ''e''n''t''i''e''r'':'' ' FINC
+EMPI 0
+LIRE
+EMPI 0
+EMPI 0
+CONT
+EMPI 0
+CONT
+MULT
+AFFE
+ECRL
+ECRC 'L''e'' ''c''a''r''r''é'' ''d''u'' ''n''o''m''b''r''e'' ''e''s''t'':'' ' FINC
+EMPI 0
+CONT
+ECRE
+STOP

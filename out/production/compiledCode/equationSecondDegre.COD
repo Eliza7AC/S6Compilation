@@ -1,12 +1,13 @@
 5 mot(s) réservé(s) pour les variables globales
-ECRC Résolution d'équation du second degré FINC
-ECRC Entrez a:  FINC
+ECRC 'R''é''s''o''l''u''t''i''o''n'' ''d'''''é''q''u''a''t''i''o''n'' ''d''u'' ''s''e''c''o''n''d'' ''d''e''g''r''é' FINC
+ECRL
+ECRC 'E''n''t''r''e''z'' ''a'':'' ' FINC
 EMPI 0
 LIRE
-ECRC Entrez b:  FINC
+ECRC 'E''n''t''r''e''z'' ''b'':'' ' FINC
 EMPI 1
 LIRE
-ECRC Entrez c:  FINC
+ECRC 'E''n''t''r''e''z'' ''c'':'' ' FINC
 EMPI 2
 LIRE
 ECRL
@@ -27,10 +28,109 @@ EMPI 2
 CONT
 MULT
 MULT
-ADDI
+SOUS
 AFFE
-ECRC Delta vaux:  FINC
+ECRC 'D''e''l''t''a'' ''v''a''u''t'':'' ' FINC
 EMPI 3
 CONT
 ECRE
-STOP
+ECRL
+EMPI 3
+CONT
+EMPI 0
+SOUS
+ALSN ų
+EMPI 3
+CONT
+EMPI 1
+ADDI
+EMPI 3
+CONT
+EMPI 0
+SOUS
+DIV
+ALSN Ą
+ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''r''é''e''l''l''e''s'':' FINC
+ECRL
+ECRC 'r''1'' ''='' ''(' FINC
+EMPI 1
+CONT
+MOIN
+ECRE
+ECRC ' ''+'' ''√''(' FINC
+EMPI 3
+CONT
+ECRE
+ECRC ')'')'' ''/'' ' FINC
+EMPI 2
+EMPI 0
+CONT
+MULT
+ECRE
+ECRL
+ECRC 'r''2'' ''='' ''(' FINC
+EMPI 1
+CONT
+MOIN
+ECRE
+ECRC ' ''-'' ''√''(' FINC
+EMPI 3
+CONT
+ECRE
+ECRC ')'')'' ''/'' ' FINC
+EMPI 2
+EMPI 0
+CONT
+MULT
+ECRE
+ALLE ű
+Ą: ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''c''o''m''p''l''e''x''e''s'':' FINC
+ECRL
+ECRC 'i''1'' ''='' ''(' FINC
+EMPI 1
+CONT
+MOIN
+ECRE
+ECRC ' ''+'' ''i''√''(' FINC
+EMPI 3
+CONT
+MOIN
+ECRE
+ECRC ')'')'' ''/'' ' FINC
+EMPI 2
+EMPI 0
+CONT
+MULT
+ECRE
+ECRL
+ECRC 'i''2'' ''='' ''(' FINC
+EMPI 1
+CONT
+MOIN
+ECRE
+ECRC ' ''-'' ''i''√''(' FINC
+EMPI 3
+CONT
+MOIN
+ECRE
+ECRC ')'')'' ''/'' ' FINC
+EMPI 2
+EMPI 0
+CONT
+MULT
+ECRE
+ű: ALLE Ɵ
+ų: ECRC 'U''n''e'' ''s''e''u''l''e'' ''s''o''l''u''t''i''o''n'':' FINC
+ECRL
+ECRC 'r''0'' ''='' ' FINC
+EMPI 1
+CONT
+MOIN
+ECRE
+ECRC '/' FINC
+EMPI 2
+EMPI 0
+CONT
+MULT
+ECRE
+Ɵ: STOP

@@ -1,9 +1,0 @@
-PROGRAMME Test2;
-VAR nb;
-DEBUT
-    ECRIRE('Entrez un nombre entier: ');
-    LIRE(nb);
-    nb := 2 * nb;
-    ECRIRE();
-    ECRIRE('Le carré du nombre est: ', nb);
-FIN.

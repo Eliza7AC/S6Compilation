@@ -15,6 +15,8 @@ public class Generateur {
     public static final int EMPI = 11;
     public static final int CONT = 12;
     public static final int STOP = 13;
+    public static final int ALLE = 14;
+    public static final int ALSN = 15;
 
     public static void GENCODE_PROG_FIN() {
         Interpreteur.P_CODE[CO] = Generateur.STOP;
@@ -85,6 +87,40 @@ public class Generateur {
         CO++;
     }
 
+    public static void GENCODE_INST_COND_EXP() {
+        Interpreteur.P_CODE[CO] = Generateur.ALSN;
+        Interpreteur.PILOP.push(CO + 1);
+        CO += 2;
+    }
+
+    public static void GENCODE_INST_COND_EXP_INST() {
+        Interpreteur.P_CODE[Interpreteur.PILOP.pop()] = CO + 2;
+        Interpreteur.P_CODE[CO] = Generateur.ALLE;
+        Interpreteur.PILOP.push(CO + 1);
+        CO += 2;
+    }
+
+    public static void GENCODE_INST_COND_RECO() {
+        Interpreteur.P_CODE[Interpreteur.PILOP.pop()] = CO;
+    }
+
+    public static void GENCODE_INST_REP() {
+        Interpreteur.PILOP.push(CO);
+    }
+
+    public static void GENCODE_INST_REP_EXP() {
+        Interpreteur.P_CODE[CO] = Generateur.ALSN;
+        Interpreteur.PILOP.push(CO + 1);
+        CO += 2;
+    }
+
+    public static void GENCODE_INST_REP_INST() {
+        Interpreteur.P_CODE[Interpreteur.PILOP.pop()] = CO + 2;
+        Interpreteur.P_CODE[CO] = Generateur.ALLE;
+        Interpreteur.P_CODE[CO + 1] = Interpreteur.PILOP.pop();
+        CO += 2;
+    }
+
     public static String getCodeName(int code) {
         switch (code) {
             case Generateur.ADDI:
@@ -115,6 +151,10 @@ public class Generateur {
                 return "CONT";
             case Generateur.STOP:
                 return "STOP";
+            case Generateur.ALLE:
+                return "ALLE";
+            case Generateur.ALSN:
+                return "ALSN";
             default:
                 return "";
         }

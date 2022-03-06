@@ -40,7 +40,7 @@ public class AnalyseurSyntaxique {
                             return false;
                         }
                     } else {
-                        System.out.println("Erreur syntaxique dans une instruction de programme: erreur dans un bloc d'instruction");
+                        System.out.println("Erreur syntaxique dans une instruction de programme: bloc d'instruction attendu");
                         return false;
                     }
                 } else {
@@ -244,7 +244,86 @@ public class AnalyseurSyntaxique {
      * @return true si aucune erreur syntaxique, false sinon
      */
     public static boolean INSTRUCTION() {
-        return AFFECTATION() || LECTURE() || ECRITURE() || BLOC();
+        return INST_NON_COND() || INST_COND();
+    }
+
+    public static boolean INST_NON_COND() {
+        return AFFECTATION() || LECTURE() || ECRITURE() || BLOC() || INST_REPE();
+    }
+
+    public static boolean INST_REPE() {
+        if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("TANTQUE")) {
+            Generateur.GENCODE_INST_REP();
+            UNILEX = AnalyseurLexical.ANALEX();
+            if (EXP()) {
+                Generateur.GENCODE_INST_REP_EXP();
+                if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("FAIRE")) {
+                    UNILEX = AnalyseurLexical.ANALEX();
+                    if (INSTRUCTION()) {
+                        Generateur.GENCODE_INST_REP_INST();
+                        return true;
+                    } else {
+                        System.out.println("Erreur syntaxique dans une instruction répétitive: erreur d'instruction dans le bloc FAIRE");
+                        return false;
+                    }
+                } else {
+                    System.out.println("Erreur syntaxique dans une instruction répétitive: mot-clé FAIRE attendu");
+                    return false;
+                }
+            } else {
+                System.out.println("Erreur syntaxique dans une instruction répétitive: erreur d'expression dans la condition TANTQUE");
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean INST_COND() {
+        boolean fin, erreur;
+        if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("SI")) {
+            UNILEX = AnalyseurLexical.ANALEX();
+            if (EXP()) {
+                Generateur.GENCODE_INST_COND_EXP();
+                if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("ALORS")) {
+                    UNILEX = AnalyseurLexical.ANALEX();
+                    if (INST_COND() || INST_NON_COND()) {
+                        Generateur.GENCODE_INST_COND_EXP_INST();
+                        fin = false;
+                        erreur = false;
+                        do {
+                            if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("SINON")) {
+                                UNILEX = AnalyseurLexical.ANALEX();
+                                erreur = !INSTRUCTION();
+                                if (erreur) {
+                                    fin = true;
+                                }
+                            } else {
+                                fin = true;
+                            }
+                        } while (!fin);
+                        if (erreur) {
+                            System.out.println("Erreur syntaxique dans une instruction conditionnelle: erreur d'instruction dans le bloc SINON");
+                            return false;
+                        } else {
+                            Generateur.GENCODE_INST_COND_RECO();
+                            return true;
+                        }
+                    } else {
+                        System.out.println("Erreur syntaxique dans une instruction conditionnelle: instruction attendue");
+                        return false;
+                    }
+                } else {
+                    System.out.println("Erreur syntaxique dans une instruction conditionnelle: mot-clé ALORS attendu");
+                    return false;
+                }
+            } else {
+                System.out.println("Erreur syntaxique dans une instruction conditionnelle: expression attendue");
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -365,7 +444,6 @@ public class AnalyseurSyntaxique {
                 UNILEX = AnalyseurLexical.ANALEX();
                 erreur = false;
                 if (ECR_EXP()) {
-//                    UNILEX = AnalyseurLexical.ANALEX();
                     fin = false;
                     do {
                         if (UNILEX == T_UNILEX.virg) {
@@ -473,7 +551,6 @@ public class AnalyseurSyntaxique {
         } else if (UNILEX == T_UNILEX.parouv) {
             UNILEX = AnalyseurLexical.ANALEX();
             if (EXP()) {
-                UNILEX = AnalyseurLexical.ANALEX();
                 if (UNILEX == T_UNILEX.parfer) {
                     UNILEX = AnalyseurLexical.ANALEX();
                     return true;
@@ -489,7 +566,6 @@ public class AnalyseurSyntaxique {
             UNILEX = AnalyseurLexical.ANALEX();
             if (TERME()) {
                 Generateur.GENCODE_TERME_MOINS();
-                UNILEX = AnalyseurLexical.ANALEX();
                 return true;
             } else {
                 System.out.println("Erreur syntaxique dans une instruction de terme: terme attendu");
@@ -510,7 +586,7 @@ public class AnalyseurSyntaxique {
             Generateur.GENCODE_OP_BIN(Generateur.ADDI);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
-        } else if (UNILEX == T_UNILEX.moins) {
+        } else if (UNILEX == T_UNILEX.moins || UNILEX == T_UNILEX.diff) {
             Generateur.GENCODE_OP_BIN(Generateur.SOUS);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
@@ -518,7 +594,7 @@ public class AnalyseurSyntaxique {
             Generateur.GENCODE_OP_BIN(Generateur.MULT);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
-        } else if (UNILEX == T_UNILEX.divi) {
+        } else if (UNILEX == T_UNILEX.divi || UNILEX == T_UNILEX.sup || UNILEX == T_UNILEX.supe) {
             Generateur.GENCODE_OP_BIN(Generateur.DIV);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;

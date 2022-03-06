@@ -1,8 +1,7 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class Interpreteur {
     private static final int[] MEMVAR = new int[500];
@@ -18,9 +17,32 @@ public class Interpreteur {
     public static void CREER_FICHIER_CODE(String initialName) {
         File compiledCode = new File("out/production/compiledCode/"+initialName+".COD");
         try {
+            ArrayList<Integer> alle = new ArrayList<>();
+            ArrayList<Integer> alsn = new ArrayList<>();
             FileWriter fileWriter = new FileWriter(compiledCode, false);
             fileWriter.write(Identificateur.TABLE_IDENT_ARRAY.size() + " mot(s) réservé(s) pour les variables globales\n");
+            for (int index = 0; index < P_CODE.length; index++) {
+                if (P_CODE[index] == Generateur.ALLE) {
+                    alle.add(P_CODE[index+1]);
+                } else if (P_CODE[index] == Generateur.ALSN) {
+                    alsn.add(P_CODE[index+1]);
+                }
+            }
+            Collections.sort(alle);
+            Collections.sort(alsn);
             for (int localCO = 0; localCO < P_CODE.length; localCO++) {
+                if (alle.size() != 0) {
+                    if (alle.get(0) == localCO) {
+                        fileWriter.write((char) alle.get(0).intValue() + ": ");
+                        alle.remove(0);
+                    }
+                }
+                if (alsn.size() != 0) {
+                    if (alsn.get(0) == localCO) {
+                        fileWriter.write( (char) alsn.get(0).intValue() + ": ");
+                        alsn.remove(0);
+                    }
+                }
                 if (P_CODE[localCO] == Generateur.STOP) {
                     fileWriter.write(Generateur.getCodeName(Generateur.STOP));
                     break;
@@ -29,13 +51,19 @@ public class Interpreteur {
                     StringBuilder line = new StringBuilder();
                     localCO++;
                     while (P_CODE[localCO] != Generateur.FINC) {
-                        line.append((char) P_CODE[localCO]);
+                        line.append('\'').append((char) P_CODE[localCO]).append('\'');
                         localCO++;
                     }
-                    fileWriter.write(Generateur.getCodeName(Generateur.ECRC) + " " + line + " " + Generateur.getCodeName(Generateur.FINC) +"\n");
+                    fileWriter.write(Generateur.getCodeName(Generateur.ECRC) + " " + line + " " + Generateur.getCodeName(Generateur.FINC) + "\n");
                 } else if (P_CODE[localCO] == Generateur.EMPI) {
                     localCO++;
-                    fileWriter.write(Generateur.getCodeName(Generateur.EMPI)+ " " + P_CODE[localCO] +"\n");
+                    fileWriter.write(Generateur.getCodeName(Generateur.EMPI)+ " " + P_CODE[localCO] + "\n");
+                } else if (P_CODE[localCO] == Generateur.ALLE) {
+                    localCO ++;
+                    fileWriter.write(Generateur.getCodeName(Generateur.ALLE) + " " + (char) P_CODE[localCO] + "\n");
+                } else if (P_CODE[localCO] == Generateur.ALSN) {
+                    localCO ++;
+                    fileWriter.write(Generateur.getCodeName(Generateur.ALSN) + " " + (char) P_CODE[localCO] + "\n");
                 } else {
                     fileWriter.write(Generateur.getCodeName(P_CODE[localCO])+"\n");
                 }
@@ -88,18 +116,24 @@ public class Interpreteur {
                 case Generateur.CONT:
                     CONT();
                     break;
+                case Generateur.ALLE:
+                    ALLE();
+                    break;
+                case Generateur.ALSN:
+                    ALSN();
+                    break;
             }
         }
     }
 
     /*************************************************
-     * Instructions associées à P_CODE
+     * Instructions de la machine virtuelle
      *************************************************/
 
     /**
      * Instruction arithmétique d'addition
      */
-    public static void ADDI() {
+    private static void ADDI() {
         int firstInt = PILEX.pop();
         int secondInt = PILEX.pop();
         PILEX.push(secondInt + firstInt);
@@ -109,7 +143,7 @@ public class Interpreteur {
     /**
      * Instruction arithmétique de soustraction
      */
-    public static void SOUS() {
+    private static void SOUS() {
         int firstInt = PILEX.pop();
         int secondInt = PILEX.pop();
         PILEX.push(secondInt - firstInt);
@@ -119,7 +153,7 @@ public class Interpreteur {
     /**
      * Instruction arithmétique de multiplication
      */
-    public static void MULT() {
+    private static void MULT() {
         int firstInt = PILEX.pop();
         int secondInt = PILEX.pop();
         PILEX.push(secondInt * firstInt);
@@ -129,21 +163,22 @@ public class Interpreteur {
     /**
      * Instruction arithmétique de division
      */
-    public static void DIV() {
+    private static void DIV() {
         int firstInt = PILEX.pop();
         if (firstInt == 0) {
             System.out.println("Erreur d'exécution: division par 0");
             System.exit(-1);
+        } else {
+            int secondInt = PILEX.pop();
+            PILEX.push(secondInt / firstInt);
+            CO++;
         }
-        int secondInt = PILEX.pop();
-        PILEX.push(secondInt / firstInt);
-        CO++;
     }
 
     /**
      * Instruction arithmétique de négation
      */
-    public static void MOIN() {
+    private static void MOIN() {
         int nb = PILEX.pop();
         PILEX.push(-nb);
         CO++;
@@ -152,7 +187,7 @@ public class Interpreteur {
     /**
      * Instruction d'affectation
      */
-    public static void AFFE() {
+    private static void AFFE() {
         int nb = PILEX.pop();
         int adr = PILEX.pop();
         MEMVAR[adr] = nb;
@@ -162,7 +197,7 @@ public class Interpreteur {
     /**
      * Instruction de lecture
      */
-    public static void LIRE() {
+    private static void LIRE() {
         Scanner sc = new Scanner(System.in);
         int adr = PILEX.pop();
         MEMVAR[adr] = sc.nextInt();
@@ -172,7 +207,7 @@ public class Interpreteur {
     /**
      * Instruction d'écriture de saut de ligne
      */
-    public static void ECRL() {
+    private static void ECRL() {
         System.out.println();
         CO++;
     }
@@ -180,7 +215,7 @@ public class Interpreteur {
     /**
      * Instruction d'écriture d'un entier
      */
-    public static void ECRE() {
+    private static void ECRE() {
         System.out.print(PILEX.pop());
         CO++;
     }
@@ -188,23 +223,21 @@ public class Interpreteur {
     /**
      * Instruction d'écriture d'une chaîne
      */
-    public static void ECRC() {
+    private static void ECRC() {
         int i = 1;
         char ch = (char) P_CODE[CO + i];
-        StringBuilder line = new StringBuilder();
         while (ch != Generateur.FINC) {
-            line.append(ch);
+            System.out.print(ch);
             i++;
             ch = (char) P_CODE[CO + i];
         }
-        System.out.println(line);
         CO = CO + i + 1;
     }
 
     /**
      * Instruction d'empilement sur la pile d'exécution
      */
-    public static void EMPI() {
+    private static void EMPI() {
         PILEX.push(P_CODE[CO + 1]);
         CO += 2;
     }
@@ -212,7 +245,7 @@ public class Interpreteur {
     /**
      * Instruction d'accès au contenu d'une adresse
      */
-    public static void CONT() {
+    private static void CONT() {
         int adr = PILEX.pop();
         PILEX.push(MEMVAR[adr]);
         CO++;
@@ -221,5 +254,25 @@ public class Interpreteur {
     /**
      * Instruction d'arrêt
      */
-    public static void STOP() {}
+    private static void STOP() {}
+
+    /**
+     * Instruction de branchement inconditionnel
+     */
+    private static void ALLE() {
+        CO++;
+        CO = P_CODE[CO];
+    }
+
+    /**
+     * Instruction de branchement conditionnel
+     */
+    private static void ALSN() {
+        if (PILEX.pop() == 0) {
+            CO++;
+            CO = P_CODE[CO];
+        } else {
+            CO +=2;
+        }
+    }
 }

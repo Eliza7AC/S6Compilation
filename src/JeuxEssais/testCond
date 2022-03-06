@@ -1,0 +1,14 @@
+PROGRAMME testCond;
+VAR resultat;
+DEBUT
+    ECRIRE('Entrez un nombre');
+    LIRE(resultat);
+    SI resultat <> 0 ALORS
+        DEBUT
+            ECRIRE('Le résultat est différent de zéro');
+            ECRIRE();
+            ECRIRE('Il est égal à ', resultat);
+        FIN
+    SINON
+        ECRIRE('Le résultat est nul');
+FIN.

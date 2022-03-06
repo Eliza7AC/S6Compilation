@@ -2,6 +2,7 @@ PROGRAMME equationSecondDegre;
 VAR a, b, c, delta, bSquare;
 DEBUT
     ECRIRE('Résolution d''équation du second degré');
+    ECRIRE();
     ECRIRE('Entrez a: ');
     LIRE(a);
     ECRIRE('Entrez b: ');
@@ -10,6 +11,32 @@ DEBUT
     LIRE(c);
     ECRIRE();
     bSquare := b * b;
-    delta := bSquare + 4 * a * c;
+    delta := bSquare - 4 * a * c;
     ECRIRE('Delta vaut: ', delta);
+    ECRIRE();
+    SI delta <> 0 ALORS
+    DEBUT
+        SI (delta + 1) / delta <> 0 ALORS
+        DEBUT
+            ECRIRE('Deux solutions réelles:');
+            ECRIRE();
+            ECRIRE('r1 = (', -b, ' + √(', delta, ')) / ', 2 * a);
+            ECRIRE();
+            ECRIRE('r2 = (', -b, ' - √(', delta, ')) / ', 2 * a);
+        FIN
+        SINON
+        DEBUT
+            ECRIRE('Deux solutions complexes:');
+            ECRIRE();
+            ECRIRE('i1 = (', -b, ' + i√(', -delta, ')) / ', 2 * a);
+            ECRIRE();
+            ECRIRE('i2 = (', -b, ' - i√(', -delta, ')) / ', 2 * a);
+        FIN
+    FIN
+    SINON
+        DEBUT
+            ECRIRE('Une seule solution:');
+            ECRIRE();
+            ECRIRE('r0 = ', -b, '/', 2 * a);
+        FIN
 FIN.

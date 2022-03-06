@@ -1,0 +1,12 @@
+PROGRAMME test;
+VAR i;
+DEBUT
+    i := 9;
+    TANTQUE i FAIRE
+    DEBUT
+        ECRIRE(i, '');
+        i := i-1;
+    FIN;
+    ECRIRE('0');
+    ECRIRE();
+FIN.

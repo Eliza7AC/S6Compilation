@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class AnalyseurLexical {
     private static int LONG_MAX_IDENT = 20;
     private static int LONG_MAX_CHAINE = 50;
-    private static int NB_MOTS_RESERVES = 7;
+    private static int NB_MOTS_RESERVES = 12;
     private static int MAXINT = Integer.MAX_VALUE;
 
     private static File SOURCE;
@@ -25,7 +25,7 @@ public class AnalyseurLexical {
     private static ArrayList<String> TABLE_MOTS_RESERVES;
 
     public static int NUM_LIGNE; // num ligne lue pour ERREUR
-    public static int CARLU_INDEX; // num char lu pour ERREUR
+    private static int CARLU_INDEX; // num char lu pour ERREUR
 
 
     /*************************************************
@@ -46,7 +46,7 @@ public class AnalyseurLexical {
         }
         NUM_LIGNE = 0;
         TABLE_MOTS_RESERVES= new ArrayList<>(
-                Arrays.asList("CONST", "DEBUT", "ECRIRE", "FIN", "LIRE", "PROGRAMME", "VAR")
+                Arrays.asList("ALORS", "CONST", "DEBUT", "ECRIRE", "FAIRE", "FIN", "LIRE", "PROGRAMME", "SI", "SINON", "TANTQUE", "VAR")
         );
     }
 
@@ -72,7 +72,8 @@ public class AnalyseurLexical {
      */
     public static void LIRE_CAR() {
         if (STR_LINE == null || CARLU_INDEX == CHAR_LINE.length) {
-            while (sc.hasNextLine()) {
+            boolean hasLine;
+            while (hasLine = sc.hasNextLine()) {
                 STR_LINE = sc.nextLine();
                 if (STR_LINE.length() != 0) {
                     CHAR_LINE = STR_LINE.toCharArray();
@@ -80,11 +81,11 @@ public class AnalyseurLexical {
                     CARLU_INDEX = 0;
                     break;
                 }
-                if (!sc.hasNextLine()) {
-                    EOF = true;
-                    ERREUR(1); // Fin de fichier atteinte
-                    return;
-                }
+            }
+            if (!hasLine) {
+                EOF = true;
+                ERREUR(1); // Fin de fichier atteinte
+                return;
             }
         }
         CARLU = CHAR_LINE[CARLU_INDEX];
@@ -117,7 +118,7 @@ public class AnalyseurLexical {
                 System.out.println("Erreur 3: Erreur longueur de chaine");
                 break;
             case 4:
-                System.out.println("Erreur 4: Erreur syntaxique");
+                System.out.println("Erreur 4: Erreur syntaxique ou sémantique");
                 break;
         }
         System.out.println("Erreur à la ligne "+ NUM_LIGNE +" caractère " + CARLU_INDEX);

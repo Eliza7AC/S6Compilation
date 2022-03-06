@@ -1,0 +1,55 @@
+1 mot(s) réservé(s) pour les variables globales
+ECRC 'E''n''t''r''e''z'' ''u''n'' ''n''o''m''b''r''e' FINC
+EMPI 0
+LIRE
+EMPI 0
+CONT
+EMPI 5
+DIV
+ALSN į
+EMPI 5
+EMPI 0
+CONT
+DIV
+ALSN č
+ECRC 'L''e'' ''r''é''s''u''l''t''a''t'' ''e''s''t'' ''é''g''a''l' FINC
+ECRL
+ECRC 'I''l'' ''e''s''t'' ''é''g''a''l'' ''à'':'' ' FINC
+EMPI 0
+CONT
+ECRE
+ECRC 'D''é''c''r''é''m''e''n''t''a''t''i''o''n'' ''d''e'' ''r''é''s''u''l''t''a''t'' ''j''u''s''q''u'''''à'' ''0' FINC
+w: EMPI 0
+CONT
+EMPI 0
+SOUS
+ALSN æ
+ECRC 'r''é''s''u''l''t''a''t'' ''v''a''u''t'':'' ' FINC
+EMPI 0
+CONT
+ECRE
+EMPI 0
+EMPI 0
+CONT
+EMPI 1
+SOUS
+AFFE
+EMPI 1
+MOIN
+EMPI 0
+CONT
+EMPI 1
+ADDI
+DIV
+ALSN Ç
+ECRC 'S''o''r''t''i''e'' ''d''e'' ''b''o''u''c''l''e'' ''i''m''m''i''n''e''n''t''e' FINC
+ALLE ä
+Ç: ECRC 'P''a''s'' ''e''n''c''o''r''e'' ''s''o''r''t''i''e'' ''d''e'' ''b''o''u''c''l''e' FINC
+ä: ALLE w
+æ: ECRC 'S''o''r''t''i''e'' ''d''e'' ''b''o''u''c''l''e'':'' ''r''é''s''u''l''t''a''t'' ''v''a''u''t'':' FINC
+ECRC '0' FINC
+ALLE ĭ
+č: ECRC 'L''e'' ''r''é''s''u''l''t''a''t'' ''d''o''i''t'' ''ê''t''r''e'' ''é''g''a''l'' ''à'' ''5' FINC
+ĭ: ALLE ŏ
+į: ECRC 'L''e'' ''r''é''s''u''l''t''a''t'' ''d''o''i''t'' ''ê''t''r''e'' ''é''g''a''l'' ''à'' ''5' FINC
+ŏ: STOP
