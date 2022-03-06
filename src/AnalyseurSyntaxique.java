@@ -52,7 +52,6 @@ public class AnalyseurSyntaxique {
                 return false;
             }
         } else {
-//            System.out.println("Erreur syntaxique dans une instruction de programme: mot-clé PROGRAMME attendu");
             return false;
         }
     }
@@ -142,7 +141,6 @@ public class AnalyseurSyntaxique {
                 return false;
             }
         } else {
-//            System.out.println("Erreur syntaxique dans une déclaration de constante: mot-clé CONST attendu");
             return false;
         }
     }
@@ -197,7 +195,6 @@ public class AnalyseurSyntaxique {
                 return false;
             }
         } else {
-//            System.out.println("Erreur syntaxique dans une déclaration de variable: mot-clé VAR attendu");
             return false;
         }
     }
@@ -234,7 +231,6 @@ public class AnalyseurSyntaxique {
                 return false;
             }
         } else {
-//            System.out.println("Erreur syntaxique dans un bloc d'instruction: mot-clé DEBUT attendu");
             return false;
         }
     }
@@ -247,10 +243,18 @@ public class AnalyseurSyntaxique {
         return INST_NON_COND() || INST_COND();
     }
 
+    /**
+     * Règle de production d'une instruction non conditionnelle
+     * @return true si aucune erreur syntaxique, false sinon
+     */
     public static boolean INST_NON_COND() {
         return AFFECTATION() || LECTURE() || ECRITURE() || BLOC() || INST_REPE();
     }
 
+    /**
+     * Règle de production d'une instruction répétitive
+     * @return true si aucune erreur syntaxique, false sinon
+     */
     public static boolean INST_REPE() {
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("TANTQUE")) {
             Generateur.GENCODE_INST_REP();
@@ -279,6 +283,10 @@ public class AnalyseurSyntaxique {
         }
     }
 
+    /**
+     * Règle de production d'une instruction conditionnelle
+     * @return true si aucune erreur syntaxique, false sinon
+     */
     public static boolean INST_COND() {
         boolean fin, erreur;
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("SI")) {
@@ -306,7 +314,7 @@ public class AnalyseurSyntaxique {
                             System.out.println("Erreur syntaxique dans une instruction conditionnelle: erreur d'instruction dans le bloc SINON");
                             return false;
                         } else {
-                            Generateur.GENCODE_INST_COND_RECO();
+                            Generateur.GENCODE_INST_COND_FIN();
                             return true;
                         }
                     } else {
@@ -357,7 +365,6 @@ public class AnalyseurSyntaxique {
                 }
             }
         } else {
-//            System.out.println("Erreur syntaxique dans une instruction d'affectation: identificateur attendu");
             return false;
         }
     }
@@ -427,7 +434,6 @@ public class AnalyseurSyntaxique {
                 return false;
             }
         } else {
-//            System.out.println("Erreur syntaxique dans une instruction de lecture: mot-clé LIRE attendu");
             return false;
         }
     }
@@ -474,7 +480,6 @@ public class AnalyseurSyntaxique {
                 return false;
             }
         } else {
-//            System.out.println("Erreur syntaxique dans une instruction d'écriture: mot-clé ECRIRE attendu");
             return false;
         }
     }
@@ -492,7 +497,6 @@ public class AnalyseurSyntaxique {
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else {
-//            System.out.println("Erreur syntaxique dans une instruction d'écriture d'expression: chaine attendu");
             return false;
         }
     }
@@ -572,7 +576,6 @@ public class AnalyseurSyntaxique {
                 return false;
             }
         } else {
-//            System.out.println("Erreur syntaxique dans une instruction de terme: entier ou identificateur ou ( ou - attendu");
             return false;
         }
     }
@@ -599,7 +602,6 @@ public class AnalyseurSyntaxique {
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else {
-//            System.out.println("Erreur syntaxique dans une instruction d'opérateur: + ou - ou * ou / attendu");
             return false;
         }
     }
