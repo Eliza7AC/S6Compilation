@@ -1,16 +1,14 @@
 5 mot(s) réservé(s) pour les variables globales
 ECRC 'R''é''s''o''l''u''t''i''o''n'' ''d'''''é''q''u''a''t''i''o''n'' ''d''u'' ''s''e''c''o''n''d'' ''d''e''g''r''é' FINC
 ECRL
-ECRC 'E''n''t''r''e''z'' ''a'':'' ' FINC
+ECRC 'E''n''t''r''e''z'' ''a'','' ''b'','' ''c' FINC
+ECRL
 EMPI 0
 LIRE
-ECRC 'E''n''t''r''e''z'' ''b'':'' ' FINC
 EMPI 1
 LIRE
-ECRC 'E''n''t''r''e''z'' ''c'':'' ' FINC
 EMPI 2
 LIRE
-ECRL
 EMPI 4
 EMPI 1
 CONT
@@ -19,8 +17,16 @@ CONT
 MULT
 AFFE
 EMPI 3
-EMPI 1
-MOIN
+EMPI 4
+CONT
+EMPI 4
+EMPI 0
+CONT
+EMPI 2
+CONT
+MULT
+MULT
+SOUS
 AFFE
 ECRC 'D''e''l''t''a'' ''v''a''u''t'':'' ' FINC
 EMPI 3
@@ -31,17 +37,12 @@ EMPI 3
 CONT
 EMPI 0
 SOUS
-ALSN Ũ
-EMPI 3
-CONT
-EMPI 1
-ADDI
+ALSN Ř
 EMPI 3
 CONT
 EMPI 0
 SOUS
-DIV
-ALSN ù
+ALSSUP é
 ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''r''é''e''l''l''e''s'':' FINC
 ECRL
 ECRC 'r''1'' ''='' ''(' FINC
@@ -75,8 +76,8 @@ EMPI 0
 CONT
 MULT
 ECRE
-ALLE Ŧ
-ù: ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''c''o''m''p''l''e''x''e''s'':' FINC
+ALLE Ŗ
+ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''c''o''m''p''l''e''x''e''s'':' FINC
 ECRL
 ECRC 'i''1'' ''='' ''(' FINC
 EMPI 1
@@ -111,8 +112,8 @@ EMPI 0
 CONT
 MULT
 ECRE
-Ŧ: ALLE Ɣ
-Ũ: ECRC 'U''n''e'' ''s''e''u''l''e'' ''s''o''l''u''t''i''o''n'':' FINC
+Ŗ: ALLE Ƅ
+Ř: ECRC 'U''n''e'' ''s''e''u''l''e'' ''s''o''l''u''t''i''o''n'':' FINC
 ECRL
 ECRC 'r''0'' ''='' ' FINC
 EMPI 1
@@ -125,4 +126,4 @@ EMPI 0
 CONT
 MULT
 ECRE
-Ɣ: STOP
+Ƅ: STOP

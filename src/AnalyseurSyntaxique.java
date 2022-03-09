@@ -261,7 +261,7 @@ public class AnalyseurSyntaxique {
             Generateur.GENCODE_INST_REP();
             UNILEX = AnalyseurLexical.ANALEX();
             if (EXP()) {
-                Generateur.GENCODE_INST_REP_EXP();
+                Generateur.GENCODE_INST_COND_REPE_ALS();
                 if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("FAIRE")) {
                     UNILEX = AnalyseurLexical.ANALEX();
                     if (INSTRUCTION()) {
@@ -293,7 +293,7 @@ public class AnalyseurSyntaxique {
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("SI")) {
             UNILEX = AnalyseurLexical.ANALEX();
             if (EXP()) {
-                Generateur.GENCODE_INST_COND_EXP();
+                Generateur.GENCODE_INST_COND_REPE_ALS();
                 if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("ALORS")) {
                     UNILEX = AnalyseurLexical.ANALEX();
                     if (INST_COND() || INST_NON_COND()) {
@@ -458,7 +458,6 @@ public class AnalyseurSyntaxique {
                             UNILEX = AnalyseurLexical.ANALEX();
                             erreur = !ECR_EXP();
                             if (erreur) {
-                                System.out.println("HERE");
                                 fin = true;
                             }
                         } else {
@@ -596,7 +595,7 @@ public class AnalyseurSyntaxique {
             Generateur.GENCODE_OP_BIN(Generateur.ADDI);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
-        } else if (UNILEX == T_UNILEX.moins || UNILEX == T_UNILEX.diff) {
+        } else if (UNILEX == T_UNILEX.moins) {
             Generateur.GENCODE_OP_BIN(Generateur.SOUS);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
@@ -604,8 +603,38 @@ public class AnalyseurSyntaxique {
             Generateur.GENCODE_OP_BIN(Generateur.MULT);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
-        } else if (UNILEX == T_UNILEX.divi || UNILEX == T_UNILEX.sup || UNILEX == T_UNILEX.supe) {
+        } else if (UNILEX == T_UNILEX.divi) {
             Generateur.GENCODE_OP_BIN(Generateur.DIV);
+            UNILEX = AnalyseurLexical.ANALEX();
+            return true;
+        } else if (UNILEX == T_UNILEX.eg) {
+            Generateur.GENCODE_OP_BIN(Generateur.EG);
+            Generateur.GENCODE_OP_BIN(Generateur.SOUS);
+            UNILEX = AnalyseurLexical.ANALEX();
+            return true;
+        } else if (UNILEX == T_UNILEX.diff) {
+            Generateur.GENCODE_OP_BIN(Generateur.DIFF);
+            Generateur.GENCODE_OP_BIN(Generateur.SOUS);
+            UNILEX = AnalyseurLexical.ANALEX();
+            return true;
+        } else if (UNILEX == T_UNILEX.inf) {
+            Generateur.GENCODE_OP_BIN(Generateur.INF);
+            Generateur.GENCODE_OP_BIN(Generateur.SOUS);
+            UNILEX = AnalyseurLexical.ANALEX();
+            return true;
+        } else if (UNILEX == T_UNILEX.infe) {
+            Generateur.GENCODE_OP_BIN(Generateur.INFE);
+            Generateur.GENCODE_OP_BIN(Generateur.SOUS);
+            UNILEX = AnalyseurLexical.ANALEX();
+            return true;
+        } else if (UNILEX == T_UNILEX.sup) {
+            Generateur.GENCODE_OP_BIN(Generateur.SUP);
+            Generateur.GENCODE_OP_BIN(Generateur.SOUS);
+            UNILEX = AnalyseurLexical.ANALEX();
+            return true;
+        } else if (UNILEX == T_UNILEX.supe) {
+            Generateur.GENCODE_OP_BIN(Generateur.SUPE);
+            Generateur.GENCODE_OP_BIN(Generateur.SOUS);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else {

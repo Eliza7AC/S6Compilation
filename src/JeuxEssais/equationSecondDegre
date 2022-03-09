@@ -3,20 +3,15 @@ VAR a, b, c, delta, bSquare;
 DEBUT
     ECRIRE('Résolution d''équation du second degré');
     ECRIRE();
-    ECRIRE('Entrez a: ');
-    LIRE(a);
-    ECRIRE('Entrez b: ');
-    LIRE(b);
-    ECRIRE('Entrez c: ');
-    LIRE(c);
-    ECRIRE();
+    ECRIRE('Entrez a, b, c', '');
+    LIRE(a, b, c);
     bSquare := b * b;
     delta := bSquare - 4 * a * c;
     ECRIRE('Delta vaut: ', delta);
     ECRIRE();
     SI delta <> 0 ALORS
     DEBUT
-        SI (delta + 1) / delta <> 0 ALORS
+        SI delta > 0 ALORS
         DEBUT
             ECRIRE('Deux solutions réelles:');
             ECRIRE();

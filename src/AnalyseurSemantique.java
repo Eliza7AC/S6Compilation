@@ -12,7 +12,7 @@ public class AnalyseurSemantique {
      * @return true si la constante a bien été ajouté à la table, false si elle existe déjà
      */
     public static boolean DEFINIR_CONSTANTE(String nom, T_UNILEX ul) {
-        if (Identificateur.CHERCHER(nom) > 0) {
+        if (Identificateur.CHERCHER(nom) >= 0) {
             return false;
         }
         Map<String, Object> properties = new HashMap<>();
@@ -35,7 +35,7 @@ public class AnalyseurSemantique {
      * @return true si la variable a bien été ajouté à la table, false si elle existe déjà
      */
     public static boolean DEFINIR_VARIABLE(String nom) {
-        if (Identificateur.CHERCHER(nom) > 0) {
+        if (Identificateur.CHERCHER(nom) >= 0) {
             return false;
         }
         Map<String, Object> properties = new HashMap<>();

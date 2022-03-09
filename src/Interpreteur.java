@@ -7,6 +7,7 @@ public class Interpreteur {
     private static final int[] MEMVAR = new int[500];
     public static final Stack<Integer> PILOP = new Stack<>();
     private static final Stack<Integer> PILEX = new Stack<>();
+    public static final Queue<Integer> PILCOMP = new LinkedList<>();
     public static final int[] P_CODE = new int[5000];
     public static int CO = 0;
 
@@ -64,6 +65,21 @@ public class Interpreteur {
                 } else if (P_CODE[localCO] == Generateur.ALSN) {
                     localCO ++;
                     fileWriter.write(Generateur.getCodeName(Generateur.ALSN) + " " + (char) P_CODE[localCO] + "\n");
+                } else if (P_CODE[localCO] == Generateur.ALSEG) {
+                    localCO ++;
+                    fileWriter.write(Generateur.getCodeName(Generateur.ALSEG) + " " + (char) P_CODE[localCO] + "\n");
+                } else if (P_CODE[localCO] == Generateur.ALSSUP) {
+                    localCO ++;
+                    fileWriter.write(Generateur.getCodeName(Generateur.ALSSUP) + " " + (char) P_CODE[localCO] + "\n");
+                } else if (P_CODE[localCO] == Generateur.ALSSUPE) {
+                    localCO ++;
+                    fileWriter.write(Generateur.getCodeName(Generateur.ALSSUPE) + " " + (char) P_CODE[localCO] + "\n");
+                } else if (P_CODE[localCO] == Generateur.ALSINF) {
+                    localCO ++;
+                    fileWriter.write(Generateur.getCodeName(Generateur.ALSINF) + " " + (char) P_CODE[localCO] + "\n");
+                } else if (P_CODE[localCO] == Generateur.ALSINFE) {
+                    localCO ++;
+                    fileWriter.write(Generateur.getCodeName(Generateur.ALSINFE) + " " + (char) P_CODE[localCO] + "\n");
                 } else {
                     fileWriter.write(Generateur.getCodeName(P_CODE[localCO])+"\n");
                 }
@@ -121,6 +137,21 @@ public class Interpreteur {
                     break;
                 case Generateur.ALSN:
                     ALSN();
+                    break;
+                case Generateur.ALSEG:
+                    ALSEG();
+                    break;
+                case Generateur.ALSSUP:
+                    ALSSUP();
+                    break;
+                case Generateur.ALSSUPE:
+                    ALSSUPE();
+                    break;
+                case Generateur.ALSINF:
+                    ALSINF();
+                    break;
+                case Generateur.ALSINFE:
+                    ALSINFE();
                     break;
             }
         }
@@ -266,10 +297,70 @@ public class Interpreteur {
     }
 
     /**
-     * Instruction de branchement conditionnel
+     * Instruction de branchement conditionnel si nul
      */
     private static void ALSN() {
         if (PILEX.pop() == 0) {
+            CO++;
+            CO = P_CODE[CO];
+        } else {
+            CO +=2;
+        }
+    }
+
+    /**
+     * Instruction de branchement conditionnel si égal
+     */
+    private static void ALSEG() {
+        if (PILEX.pop() != 0) {
+            CO++;
+            CO = P_CODE[CO];
+        } else {
+            CO +=2;
+        }
+    }
+
+    /**
+     * Instruction de branchement conditionnel si supérieur
+     */
+    private static void ALSSUP() {
+        if (PILEX.pop() <= 0) {
+            CO++;
+            CO = P_CODE[CO];
+        } else {
+            CO +=2;
+        }
+    }
+
+    /**
+     * Instruction de branchement conditionnel si supérieur ou égal
+     */
+    private static void ALSSUPE() {
+        if (PILEX.pop() < 0) {
+            CO++;
+            CO = P_CODE[CO];
+        } else {
+            CO +=2;
+        }
+    }
+
+    /**
+     * Instruction de branchement conditionnel si inférieur
+     */
+    private static void ALSINF() {
+        if (PILEX.pop() >= 0) {
+            CO++;
+            CO = P_CODE[CO];
+        } else {
+            CO +=2;
+        }
+    }
+
+    /**
+     * Instruction de branchement conditionnel si inférieur ou égal
+     */
+    private static void ALSINFE() {
+        if (PILEX.pop() > 0) {
             CO++;
             CO = P_CODE[CO];
         } else {

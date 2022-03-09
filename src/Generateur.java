@@ -20,6 +20,18 @@ public class Generateur {
     public static final int STOP = 13;
     public static final int ALLE = 14;
     public static final int ALSN = 15;
+    public static final int ALSEG = 16;
+    public static final int ALSSUP = 17;
+    public static final int ALSSUPE = 18;
+    public static final int ALSINF = 19;
+    public static final int ALSINFE = 20;
+
+    public static final int EG = 101;
+    public static final int DIFF = 102;
+    public static final int INF = 103;
+    public static final int INFE = 104;
+    public static final int SUP = 105;
+    public static final int SUPE = 106;
 
     /**
      * Génération du code lors de la fin du programme
@@ -128,10 +140,42 @@ public class Generateur {
     }
 
     /**
-     * Génération du code d'une expression lors d'une instruction conditionnelle
+     * Génération du code de comparaison lors d'une instruction conditionnelle ou répétitive
      */
-    public static void GENCODE_INST_COND_EXP() {
-        Interpreteur.P_CODE[CO] = Generateur.ALSN;
+    public static void GENCODE_INST_COND_REPE_ALS() {
+        if (Interpreteur.PILOP.size() != 0) {
+            if (Interpreteur.PILOP.peek() == EG) {
+                Interpreteur.PILOP.pop();
+                GENCODE_INST_COND_REP_EXP_ALS(ALSEG);
+            } else if (Interpreteur.PILOP.peek() == INF) {
+                Interpreteur.PILOP.pop();
+                GENCODE_INST_COND_REP_EXP_ALS(ALSINF);
+            } else if (Interpreteur.PILOP.peek() == INFE) {
+                Interpreteur.PILOP.pop();
+                GENCODE_INST_COND_REP_EXP_ALS(ALSINFE);
+            } else if (Interpreteur.PILOP.peek() == SUP) {
+                Interpreteur.PILOP.pop();
+                GENCODE_INST_COND_REP_EXP_ALS(ALSSUP);
+            } else if (Interpreteur.PILOP.peek() == SUPE) {
+                Interpreteur.PILOP.pop();
+                GENCODE_INST_COND_REP_EXP_ALS(ALSSUPE);
+            } else if (Interpreteur.PILOP.peek() == DIFF){
+                Interpreteur.PILOP.pop();
+                GENCODE_INST_COND_REP_EXP_ALS(ALSN);
+            } else {
+                GENCODE_INST_COND_REP_EXP_ALS(ALSN);
+            }
+        } else {
+            GENCODE_INST_COND_REP_EXP_ALS(ALSN);
+        }
+    }
+
+    /**
+     * Génération du code d'une expression lors d'une instruction conditionnelle ou répétitive
+     * @param code numéro de l'instruction de saut
+     */
+    public static void GENCODE_INST_COND_REP_EXP_ALS(int code) {
+        Interpreteur.P_CODE[CO] = code;
         Interpreteur.PILOP.push(CO + 1);
         CO += 2;
     }
@@ -158,15 +202,6 @@ public class Generateur {
      */
     public static void GENCODE_INST_REP() {
         Interpreteur.PILOP.push(CO);
-    }
-
-    /**
-     * Génération du code d'une expression lors d'une instruction répétitive
-     */
-    public static void GENCODE_INST_REP_EXP() {
-        Interpreteur.P_CODE[CO] = Generateur.ALSN;
-        Interpreteur.PILOP.push(CO + 1);
-        CO += 2;
     }
 
     /**
@@ -218,6 +253,16 @@ public class Generateur {
                 return "ALLE";
             case Generateur.ALSN:
                 return "ALSN";
+            case Generateur.ALSEG:
+                return "ALSEG";
+            case Generateur.ALSSUP:
+                return "ALSSUP";
+            case Generateur.ALSSUPE:
+                return "ALSSUPE";
+            case Generateur.ALSINF:
+                return "ALSINF";
+            case Generateur.ALSINFE:
+                return "ALSINFE";
             default:
                 return "";
         }

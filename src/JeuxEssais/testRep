@@ -2,7 +2,7 @@ PROGRAMME test;
 VAR i;
 DEBUT
     i := 9;
-    TANTQUE i FAIRE
+    TANTQUE i > 3 FAIRE
     DEBUT
         ECRIRE(i, '');
         i := i-1;
