@@ -1,8 +1,8 @@
 public class Generateur {
-    private static int CO = 0;
+    private static int CO = 0; // Pointeur de la zone mémoire du code machine
 
     /**
-     * Code des instructions de génération
+     * Code des instructions du code machine
      */
     public static final int ADDI = 0;
     public static final int SOUS = 1;
@@ -20,18 +20,22 @@ public class Generateur {
     public static final int STOP = 13;
     public static final int ALLE = 14;
     public static final int ALSN = 15;
-    public static final int ALSEG = 16;
+    public static final int ALSDIFF = 16;
     public static final int ALSSUP = 17;
     public static final int ALSSUPE = 18;
     public static final int ALSINF = 19;
     public static final int ALSINFE = 20;
 
+    /**
+     * Code des comparateurs
+     */
     public static final int EG = 101;
     public static final int DIFF = 102;
     public static final int INF = 103;
     public static final int INFE = 104;
     public static final int SUP = 105;
     public static final int SUPE = 106;
+
 
     /**
      * Génération du code lors de la fin du programme
@@ -143,22 +147,23 @@ public class Generateur {
      * Génération du code de comparaison lors d'une instruction conditionnelle ou répétitive
      */
     public static void GENCODE_INST_COND_REPE_ALS() {
+        GENCODE_TERME_OP_BIN_EXP();
         if (Interpreteur.PILOP.size() != 0) {
             if (Interpreteur.PILOP.peek() == EG) {
                 Interpreteur.PILOP.pop();
-                GENCODE_INST_COND_REP_EXP_ALS(ALSEG);
+                GENCODE_INST_COND_REP_EXP_ALS(ALSDIFF);
             } else if (Interpreteur.PILOP.peek() == INF) {
                 Interpreteur.PILOP.pop();
-                GENCODE_INST_COND_REP_EXP_ALS(ALSINF);
+                GENCODE_INST_COND_REP_EXP_ALS(ALSSUPE);
             } else if (Interpreteur.PILOP.peek() == INFE) {
                 Interpreteur.PILOP.pop();
-                GENCODE_INST_COND_REP_EXP_ALS(ALSINFE);
+                GENCODE_INST_COND_REP_EXP_ALS(ALSSUP);
             } else if (Interpreteur.PILOP.peek() == SUP) {
                 Interpreteur.PILOP.pop();
-                GENCODE_INST_COND_REP_EXP_ALS(ALSSUP);
+                GENCODE_INST_COND_REP_EXP_ALS(ALSINFE);
             } else if (Interpreteur.PILOP.peek() == SUPE) {
                 Interpreteur.PILOP.pop();
-                GENCODE_INST_COND_REP_EXP_ALS(ALSSUPE);
+                GENCODE_INST_COND_REP_EXP_ALS(ALSINF);
             } else if (Interpreteur.PILOP.peek() == DIFF){
                 Interpreteur.PILOP.pop();
                 GENCODE_INST_COND_REP_EXP_ALS(ALSN);
@@ -174,7 +179,7 @@ public class Generateur {
      * Génération du code d'une expression lors d'une instruction conditionnelle ou répétitive
      * @param code numéro de l'instruction de saut
      */
-    public static void GENCODE_INST_COND_REP_EXP_ALS(int code) {
+    private static void GENCODE_INST_COND_REP_EXP_ALS(int code) {
         Interpreteur.P_CODE[CO] = code;
         Interpreteur.PILOP.push(CO + 1);
         CO += 2;
@@ -212,59 +217,5 @@ public class Generateur {
         Interpreteur.P_CODE[CO] = Generateur.ALLE;
         Interpreteur.P_CODE[CO + 1] = Interpreteur.PILOP.pop();
         CO += 2;
-    }
-
-    /**
-     * Obtenir le nom de la fonction de génération à partir de son code
-     * @param code code de la fonction de génération
-     * @return nom de la fonction de génération
-     */
-    public static String getCodeName(int code) {
-        switch (code) {
-            case Generateur.ADDI:
-                return "ADDI";
-            case Generateur.SOUS:
-                return "SOUS";
-            case Generateur.MULT:
-                return "MULT";
-            case Generateur.DIV:
-                return "DIV";
-            case Generateur.MOIN:
-                return "MOIN";
-            case Generateur.AFFE:
-                return "AFFE";
-            case Generateur.LIRE:
-                return "LIRE";
-            case Generateur.ECRL:
-                return "ECRL";
-            case Generateur.ECRE:
-                return "ECRE";
-            case Generateur.ECRC:
-                return "ECRC";
-            case Generateur.FINC:
-                return "FINC";
-            case Generateur.EMPI:
-                return "EMPI";
-            case Generateur.CONT:
-                return "CONT";
-            case Generateur.STOP:
-                return "STOP";
-            case Generateur.ALLE:
-                return "ALLE";
-            case Generateur.ALSN:
-                return "ALSN";
-            case Generateur.ALSEG:
-                return "ALSEG";
-            case Generateur.ALSSUP:
-                return "ALSSUP";
-            case Generateur.ALSSUPE:
-                return "ALSSUPE";
-            case Generateur.ALSINF:
-                return "ALSINF";
-            case Generateur.ALSINFE:
-                return "ALSINFE";
-            default:
-                return "";
-        }
     }
 }

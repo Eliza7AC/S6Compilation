@@ -7,12 +7,7 @@ EMPI 0
 CONT
 EMPI 5
 SOUS
-ALSINF ƪ
-EMPI 5
-EMPI 0
-CONT
-SOUS
-ALSINF ƈ
+ALSDIFF Ž
 ECRC 'L''e'' ''r''é''s''u''l''t''a''t'' ''e''s''t'' ''é''g''a''l' FINC
 ECRL
 ECRC 'I''l'' ''e''s''t'' ''é''g''a''l'' ''à'':'' ' FINC
@@ -20,25 +15,25 @@ EMPI 0
 CONT
 ECRE
 ECRL
-S: EMPI 0
+K: EMPI 0
 CONT
 EMPI 0
 SOUS
-ALSN ş
+ALSN Ŕ
 EMPI 0
 CONT
-EMPI 3
+EMPI 2
 SOUS
-ALSINF ¿
+ALSINFE ·
 ECRC 'R''é''s''u''l''t''a''t'' ''v''a''u''t'' ''p''l''u''s'' ''q''u''e'' ''2' FINC
 ECRL
 ECRC 'D''é''c''r''é''m''e''n''t''a''t''i''o''n'' ''d''e'' ''r''é''s''u''l''t''a''t'' ''j''u''s''q''u'''''à'' ''2' FINC
 ECRL
-¥: EMPI 0
+: EMPI 0
 CONT
-EMPI 3
+EMPI 2
 SOUS
-ALSINF ½
+ALSINFE µ
 EMPI 0
 EMPI 0
 CONT
@@ -49,9 +44,9 @@ EMPI 0
 CONT
 ECRE
 ECRL
-ALLE ¥
-½: ALLE ŝ
-¿: EMPI 0
+ALLE 
+µ: ALLE Œ
+·: EMPI 0
 EMPI 0
 CONT
 EMPI 1
@@ -73,24 +68,20 @@ EMPI 0
 CONT
 ECRE
 ECRL
-EMPI 1
 EMPI 0
 CONT
-EMPI 1
-ADDI
+EMPI 0
 SOUS
-ALSINF Ŀ
+ALSDIFF Ĵ
 ECRC 'S''o''r''t''i''e'' ''d''e'' ''b''o''u''c''l''e'' ''i''m''m''i''n''e''n''t''e' FINC
 ECRL
-ALLE Ŝ
-Ŀ: ECRC 'P''a''s'' ''e''n''c''o''r''e'' ''s''o''r''t''i''e'' ''d''e'' ''b''o''u''c''l''e' FINC
-Ŝ: ECRL
-ŝ: ALLE S
-ş: ECRC 'S''o''r''t''i''e'' ''d''e'' ''b''o''u''c''l''e'':'' ''r''é''s''u''l''t''a''t'' ''v''a''u''t'':'' ' FINC
+ALLE ő
+Ĵ: ECRC 'P''a''s'' ''e''n''c''o''r''e'' ''s''o''r''t''i''e'' ''d''e'' ''b''o''u''c''l''e' FINC
+ő: ECRL
+Œ: ALLE K
+Ŕ: ECRC 'S''o''r''t''i''e'' ''d''e'' ''b''o''u''c''l''e'':'' ''r''é''s''u''l''t''a''t'' ''v''a''u''t'':'' ' FINC
 ECRC '0' FINC
 ECRL
-ALLE ƨ
-ƈ: ECRC 'L''e'' ''r''é''s''u''l''t''a''t'' ''d''o''i''t'' ''ê''t''r''e'' ''é''g''a''l'' ''à'' ''5' FINC
-ƨ: ALLE Ǌ
-ƪ: ECRC 'L''e'' ''r''é''s''u''l''t''a''t'' ''d''o''i''t'' ''ê''t''r''e'' ''é''g''a''l'' ''à'' ''5' FINC
-Ǌ: STOP
+ALLE Ɲ
+Ž: ECRC 'L''e'' ''r''é''s''u''l''t''a''t'' ''d''o''i''t'' ''ê''t''r''e'' ''é''g''a''l'' ''à'' ''5' FINC
+Ɲ: STOP

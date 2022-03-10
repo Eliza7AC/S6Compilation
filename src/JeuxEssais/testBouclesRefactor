@@ -1,0 +1,47 @@
+PROGRAMME test;
+VAR resultat;
+DEBUT
+    ECRIRE('Entrez un nombre', '');
+    LIRE(resultat);
+    SI resultat = 5 ALORS
+    DEBUT
+        ECRIRE('Le résultat est égal');
+        ECRIRE();
+        ECRIRE('Il est égal à: ', resultat);
+        ECRIRE();
+        TANTQUE resultat <> 0 FAIRE
+        DEBUT
+            SI resultat > 2 ALORS
+            DEBUT
+                ECRIRE('Résultat vaut plus que 2', '');
+                ECRIRE('Décrémentation de résultat jusqu''à 2', '');
+                TANTQUE resultat > 2 FAIRE
+                DEBUT
+                    resultat := resultat - 1;
+                    ECRIRE(resultat, '');
+                FIN
+            FIN
+            SINON
+            DEBUT
+                resultat := resultat + 1;
+                ECRIRE('Résultat après addition: ', resultat);
+                ECRIRE();
+                resultat := resultat - 2;
+                ECRIRE('Résultat après soustraction: ', resultat, '');
+                SI resultat = 0 ALORS
+                DEBUT
+                    ECRIRE('Sortie de boucle imminente');
+                    ECRIRE();
+                FIN
+                SINON
+                    ECRIRE('Pas encore sortie de boucle');
+                    ECRIRE();
+            FIN
+        FIN
+        ECRIRE('Sortie de boucle: résultat vaut: ');
+        ECRIRE('0');
+        ECRIRE();
+    FIN
+    SINON
+        ECRIRE('Le résultat doit être égal à 5');
+FIN.

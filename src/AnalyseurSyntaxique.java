@@ -29,8 +29,9 @@ public class AnalyseurSyntaxique {
                 UNILEX = AnalyseurLexical.ANALEX();
                 if (UNILEX == T_UNILEX.ptvirg) {
                     UNILEX = AnalyseurLexical.ANALEX();
-                    DECL_CONST();
-                    DECL_VAR();
+                    if (!DECL_CONST() || !DECL_VAR()) {
+                        return false;
+                    }
                     if (BLOC()) {
                         UNILEX = AnalyseurLexical.ANALEX();
                         if (UNILEX == T_UNILEX.point) {
@@ -142,7 +143,7 @@ public class AnalyseurSyntaxique {
                 return false;
             }
         } else {
-            return false;
+            return true;
         }
     }
 
@@ -196,7 +197,7 @@ public class AnalyseurSyntaxique {
                 return false;
             }
         } else {
-            return false;
+            return true;
         }
     }
 
@@ -260,7 +261,7 @@ public class AnalyseurSyntaxique {
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("TANTQUE")) {
             Generateur.GENCODE_INST_REP();
             UNILEX = AnalyseurLexical.ANALEX();
-            if (EXP()) {
+            if (EXP_COND()) {
                 Generateur.GENCODE_INST_COND_REPE_ALS();
                 if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("FAIRE")) {
                     UNILEX = AnalyseurLexical.ANALEX();
@@ -276,7 +277,7 @@ public class AnalyseurSyntaxique {
                     return false;
                 }
             } else {
-                System.out.println("Erreur syntaxique dans une instruction répétitive: erreur d'expression dans la condition TANTQUE");
+                System.out.println("Erreur syntaxique dans une instruction répétitive: expression conditionnelle attendue");
                 return false;
             }
         } else {
@@ -292,7 +293,7 @@ public class AnalyseurSyntaxique {
         boolean fin, erreur;
         if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("SI")) {
             UNILEX = AnalyseurLexical.ANALEX();
-            if (EXP()) {
+            if (EXP_COND()) {
                 Generateur.GENCODE_INST_COND_REPE_ALS();
                 if (UNILEX == T_UNILEX.motcle && AnalyseurLexical.CHAINE.equals("ALORS")) {
                     UNILEX = AnalyseurLexical.ANALEX();
@@ -328,7 +329,7 @@ public class AnalyseurSyntaxique {
                     return false;
                 }
             } else {
-                System.out.println("Erreur syntaxique dans une instruction conditionnelle: expression attendue");
+                System.out.println("Erreur syntaxique dans une instruction conditionnelle: expression conditionnelle attendue");
                 return false;
             }
         } else {
@@ -607,7 +608,44 @@ public class AnalyseurSyntaxique {
             Generateur.GENCODE_OP_BIN(Generateur.DIV);
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
-        } else if (UNILEX == T_UNILEX.eg) {
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Règle de production d'une expression conditionnelle (IF et TANTQUE)
+     * @return true si aucune erreur syntaxique, false sinon
+     */
+    public static boolean EXP_COND() {
+        return TERME() && SUITE_TERME_COND();
+    }
+
+    /**
+     * Règle de production de ma suite d'un terme d'une expression conditionnelle (IF et TANTQUE)
+     * @return true si aucune erreur syntaxique, false sinon
+     */
+    public static boolean SUITE_TERME_COND() {
+        if (OP_BIN_COND()) {
+            return TERME();
+        } else {
+            // Si aucune suite, comparaison à 0
+            int temp = AnalyseurLexical.NOMBRE;
+            AnalyseurLexical.NOMBRE = 0;
+            Generateur.GENCODE_TERME_ENT();
+            AnalyseurLexical.NOMBRE = temp;
+            Generateur.GENCODE_OP_BIN(Generateur.DIFF);
+            Generateur.GENCODE_OP_BIN(Generateur.SOUS);
+            return true;
+        }
+    }
+
+    /**
+     * Règle de production d'un opérateur de comparaison
+     * @return true si aucune erreur syntaxique, false sinon
+     */
+    public static boolean OP_BIN_COND() {
+         if (UNILEX == T_UNILEX.eg) {
             Generateur.GENCODE_OP_BIN(Generateur.EG);
             Generateur.GENCODE_OP_BIN(Generateur.SOUS);
             UNILEX = AnalyseurLexical.ANALEX();
@@ -638,7 +676,7 @@ public class AnalyseurSyntaxique {
             UNILEX = AnalyseurLexical.ANALEX();
             return true;
         } else {
-            return false;
+             return false;
         }
     }
 }

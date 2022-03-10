@@ -42,7 +42,7 @@ EMPI 3
 CONT
 EMPI 0
 SOUS
-ALSSUP é
+ALSINFE é
 ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''r''é''e''l''l''e''s'':' FINC
 ECRL
 ECRC 'r''1'' ''='' ''(' FINC
@@ -77,7 +77,7 @@ CONT
 MULT
 ECRE
 ALLE Ŗ
-ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''c''o''m''p''l''e''x''e''s'':' FINC
+é: ECRC 'D''e''u''x'' ''s''o''l''u''t''i''o''n''s'' ''c''o''m''p''l''e''x''e''s'':' FINC
 ECRL
 ECRC 'i''1'' ''='' ''(' FINC
 EMPI 1

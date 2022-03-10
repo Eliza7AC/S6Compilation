@@ -11,5 +11,4 @@ public class Main {
         Interpreteur.CREER_FICHIER_CODE(sourceCode.getName());
         Interpreteur.INTERPRETER();
     }
-
 }

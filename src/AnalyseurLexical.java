@@ -28,6 +28,7 @@ public class AnalyseurLexical {
     private static int CARLU_INDEX; // num char lu pour ERREUR
 
 
+
     /*************************************************
      * Procédures
      *************************************************/
@@ -43,6 +44,7 @@ public class AnalyseurLexical {
             sc = new Scanner(SOURCE);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.exit(1);
         }
         NUM_LIGNE = 0;
         TABLE_MOTS_RESERVES= new ArrayList<>(
@@ -63,8 +65,12 @@ public class AnalyseurLexical {
      * @param motClef Nom du mot réservé
      */
     public static void INSERE_TABLE_MOTS_RESERVES(String motClef){
-        TABLE_MOTS_RESERVES.add(motClef);
-        Collections.sort(TABLE_MOTS_RESERVES);
+        if (TABLE_MOTS_RESERVES.size() <= NB_MOTS_RESERVES) {
+            TABLE_MOTS_RESERVES.add(motClef);
+            Collections.sort(TABLE_MOTS_RESERVES);
+        } else {
+            System.out.println("Impossible d'ajouter un mot réservé: nombre maximal de mot atteint");
+        }
     }
 
     /**
@@ -122,7 +128,7 @@ public class AnalyseurLexical {
                 break;
         }
         System.out.println("Erreur à la ligne "+ NUM_LIGNE +" caractère " + CARLU_INDEX);
-        System.exit(-1);
+        System.exit(1);
     }
 
     /**
@@ -240,7 +246,6 @@ public class AnalyseurLexical {
             if (TABLE_MOTS_RESERVES.contains(CHAINE)) {
                 return T_UNILEX.motcle;
             }
-//            Identificateur.INSERER(CHAINE, null, null);
             return T_UNILEX.ident;
         }
         return null;

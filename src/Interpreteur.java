@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.util.*;
 
 public class Interpreteur {
-    private static final int[] MEMVAR = new int[500];
-    public static final Stack<Integer> PILOP = new Stack<>();
-    private static final Stack<Integer> PILEX = new Stack<>();
-    public static final Queue<Integer> PILCOMP = new LinkedList<>();
-    public static final int[] P_CODE = new int[5000];
-    public static int CO = 0;
+    private static final int[] MEMVAR = new int[100]; // Zone mémoire des variable/constantes globales
+    private static final Stack<Integer> PILEX = new Stack<>(); // Zone mémoire de la pile d'exécution
+    public static final Stack<Integer> PILOP = new Stack<>(); // Zone mémoire de la pile d'opérateur
+    public static final int[] P_CODE = new int[5000]; // Zone mémoire du code machine
+    private static int CO = 0; // Pointeur de la zone mémoire du code machine
 
     /**
      * Créer le fichier du code compilé
@@ -18,34 +17,29 @@ public class Interpreteur {
     public static void CREER_FICHIER_CODE(String initialName) {
         File compiledCode = new File("out/production/compiledCode/"+initialName+".COD");
         try {
-            ArrayList<Integer> alle = new ArrayList<>();
-            ArrayList<Integer> alsn = new ArrayList<>();
+            ArrayList<Integer> al = new ArrayList<>();
             FileWriter fileWriter = new FileWriter(compiledCode, false);
             fileWriter.write(Identificateur.TABLE_IDENT_ARRAY.size() + " mot(s) réservé(s) pour les variables globales\n");
             for (int index = 0; index < P_CODE.length; index++) {
-                if (P_CODE[index] == Generateur.ALLE) {
-                    alle.add(P_CODE[index+1]);
-                } else if (P_CODE[index] == Generateur.ALSN) {
-                    alsn.add(P_CODE[index+1]);
+                if (P_CODE[index] == Generateur.ALLE || P_CODE[index] == Generateur.ALSN || P_CODE[index] == Generateur.ALSDIFF
+                        || P_CODE[index] == Generateur.ALSSUP || P_CODE[index] == Generateur.ALSSUPE
+                        || P_CODE[index] == Generateur.ALSINF || P_CODE[index] == Generateur.ALSINFE
+                ) {
+                    al.add(P_CODE[index+1]);
+                } else if (P_CODE[index] == Generateur.STOP) {
+                    break;
                 }
             }
-            Collections.sort(alle);
-            Collections.sort(alsn);
+            Collections.sort(al);
             for (int localCO = 0; localCO < P_CODE.length; localCO++) {
-                if (alle.size() != 0) {
-                    if (alle.get(0) == localCO) {
-                        fileWriter.write((char) alle.get(0).intValue() + ": ");
-                        alle.remove(0);
-                    }
-                }
-                if (alsn.size() != 0) {
-                    if (alsn.get(0) == localCO) {
-                        fileWriter.write( (char) alsn.get(0).intValue() + ": ");
-                        alsn.remove(0);
+                if (al.size() != 0) {
+                    if (al.get(0) == localCO) {
+                        fileWriter.write((char) al.get(0).intValue() + ": ");
+                        al.remove(0);
                     }
                 }
                 if (P_CODE[localCO] == Generateur.STOP) {
-                    fileWriter.write(Generateur.getCodeName(Generateur.STOP));
+                    fileWriter.write(getCodeName(Generateur.STOP));
                     break;
                 }
                 if (P_CODE[localCO] == Generateur.ECRC) {
@@ -55,33 +49,18 @@ public class Interpreteur {
                         line.append('\'').append((char) P_CODE[localCO]).append('\'');
                         localCO++;
                     }
-                    fileWriter.write(Generateur.getCodeName(Generateur.ECRC) + " " + line + " " + Generateur.getCodeName(Generateur.FINC) + "\n");
+                    fileWriter.write(getCodeName(Generateur.ECRC) + " " + line + " " + getCodeName(Generateur.FINC) + "\n");
+                } else if (P_CODE[localCO] == Generateur.ALLE || P_CODE[localCO] == Generateur.ALSN || P_CODE[localCO] == Generateur.ALSDIFF
+                        || P_CODE[localCO] == Generateur.ALSSUP || P_CODE[localCO] == Generateur.ALSSUPE
+                        || P_CODE[localCO] == Generateur.ALSINF || P_CODE[localCO] == Generateur.ALSINFE
+                ) {
+                    localCO++;
+                    fileWriter.write(getCodeName(P_CODE[localCO-1])+ " " + (char) P_CODE[localCO] + "\n");
                 } else if (P_CODE[localCO] == Generateur.EMPI) {
                     localCO++;
-                    fileWriter.write(Generateur.getCodeName(Generateur.EMPI)+ " " + P_CODE[localCO] + "\n");
-                } else if (P_CODE[localCO] == Generateur.ALLE) {
-                    localCO ++;
-                    fileWriter.write(Generateur.getCodeName(Generateur.ALLE) + " " + (char) P_CODE[localCO] + "\n");
-                } else if (P_CODE[localCO] == Generateur.ALSN) {
-                    localCO ++;
-                    fileWriter.write(Generateur.getCodeName(Generateur.ALSN) + " " + (char) P_CODE[localCO] + "\n");
-                } else if (P_CODE[localCO] == Generateur.ALSEG) {
-                    localCO ++;
-                    fileWriter.write(Generateur.getCodeName(Generateur.ALSEG) + " " + (char) P_CODE[localCO] + "\n");
-                } else if (P_CODE[localCO] == Generateur.ALSSUP) {
-                    localCO ++;
-                    fileWriter.write(Generateur.getCodeName(Generateur.ALSSUP) + " " + (char) P_CODE[localCO] + "\n");
-                } else if (P_CODE[localCO] == Generateur.ALSSUPE) {
-                    localCO ++;
-                    fileWriter.write(Generateur.getCodeName(Generateur.ALSSUPE) + " " + (char) P_CODE[localCO] + "\n");
-                } else if (P_CODE[localCO] == Generateur.ALSINF) {
-                    localCO ++;
-                    fileWriter.write(Generateur.getCodeName(Generateur.ALSINF) + " " + (char) P_CODE[localCO] + "\n");
-                } else if (P_CODE[localCO] == Generateur.ALSINFE) {
-                    localCO ++;
-                    fileWriter.write(Generateur.getCodeName(Generateur.ALSINFE) + " " + (char) P_CODE[localCO] + "\n");
+                    fileWriter.write(getCodeName(Generateur.EMPI)+ " " + P_CODE[localCO] + "\n");
                 } else {
-                    fileWriter.write(Generateur.getCodeName(P_CODE[localCO])+"\n");
+                    fileWriter.write(getCodeName(P_CODE[localCO])+"\n");
                 }
             }
             fileWriter.close();
@@ -91,7 +70,7 @@ public class Interpreteur {
     }
 
     /**
-     * Interprète le code compilé
+     * Interprète le code machine
      */
     public static void INTERPRETER() {
         while (P_CODE[CO] != Generateur.STOP) {
@@ -138,8 +117,8 @@ public class Interpreteur {
                 case Generateur.ALSN:
                     ALSN();
                     break;
-                case Generateur.ALSEG:
-                    ALSEG();
+                case Generateur.ALSDIFF:
+                    ALSDIFF();
                     break;
                 case Generateur.ALSSUP:
                     ALSSUP();
@@ -199,7 +178,7 @@ public class Interpreteur {
         int firstInt = PILEX.pop();
         if (firstInt == 0) {
             System.out.println("Erreur d'exécution: division par 0");
-            System.exit(-1);
+            System.exit(1);
         } else {
             int secondInt = PILEX.pop();
             PILEX.push(secondInt / firstInt);
@@ -297,7 +276,7 @@ public class Interpreteur {
     }
 
     /**
-     * Instruction de branchement conditionnel si nul
+     * Instruction de branchement conditionnel si nul (si égal)
      */
     private static void ALSN() {
         if (PILEX.pop() == 0) {
@@ -309,9 +288,9 @@ public class Interpreteur {
     }
 
     /**
-     * Instruction de branchement conditionnel si égal
+     * Instruction de branchement conditionnel si différent
      */
-    private static void ALSEG() {
+    private static void ALSDIFF() {
         if (PILEX.pop() != 0) {
             CO++;
             CO = P_CODE[CO];
@@ -324,7 +303,7 @@ public class Interpreteur {
      * Instruction de branchement conditionnel si supérieur
      */
     private static void ALSSUP() {
-        if (PILEX.pop() <= 0) {
+        if (PILEX.pop() > 0) {
             CO++;
             CO = P_CODE[CO];
         } else {
@@ -336,7 +315,7 @@ public class Interpreteur {
      * Instruction de branchement conditionnel si supérieur ou égal
      */
     private static void ALSSUPE() {
-        if (PILEX.pop() < 0) {
+        if (PILEX.pop() >= 0) {
             CO++;
             CO = P_CODE[CO];
         } else {
@@ -348,7 +327,7 @@ public class Interpreteur {
      * Instruction de branchement conditionnel si inférieur
      */
     private static void ALSINF() {
-        if (PILEX.pop() >= 0) {
+        if (PILEX.pop() < 0) {
             CO++;
             CO = P_CODE[CO];
         } else {
@@ -360,11 +339,65 @@ public class Interpreteur {
      * Instruction de branchement conditionnel si inférieur ou égal
      */
     private static void ALSINFE() {
-        if (PILEX.pop() > 0) {
+        if (PILEX.pop() <= 0) {
             CO++;
             CO = P_CODE[CO];
         } else {
             CO +=2;
+        }
+    }
+
+    /**
+     * Obtenir le nom de la fonction du code machine à partir de son code
+     * @param code code de la fonction du code machine
+     * @return nom de la fonction du code machine
+     */
+    private static String getCodeName(int code) {
+        switch (code) {
+            case Generateur.ADDI:
+                return "ADDI";
+            case Generateur.SOUS:
+                return "SOUS";
+            case Generateur.MULT:
+                return "MULT";
+            case Generateur.DIV:
+                return "DIV";
+            case Generateur.MOIN:
+                return "MOIN";
+            case Generateur.AFFE:
+                return "AFFE";
+            case Generateur.LIRE:
+                return "LIRE";
+            case Generateur.ECRL:
+                return "ECRL";
+            case Generateur.ECRE:
+                return "ECRE";
+            case Generateur.ECRC:
+                return "ECRC";
+            case Generateur.FINC:
+                return "FINC";
+            case Generateur.EMPI:
+                return "EMPI";
+            case Generateur.CONT:
+                return "CONT";
+            case Generateur.STOP:
+                return "STOP";
+            case Generateur.ALLE:
+                return "ALLE";
+            case Generateur.ALSN:
+                return "ALSN";
+            case Generateur.ALSDIFF:
+                return "ALSDIFF";
+            case Generateur.ALSSUP:
+                return "ALSSUP";
+            case Generateur.ALSSUPE:
+                return "ALSSUPE";
+            case Generateur.ALSINF:
+                return "ALSINF";
+            case Generateur.ALSINFE:
+                return "ALSINFE";
+            default:
+                return "";
         }
     }
 }

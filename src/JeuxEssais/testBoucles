@@ -15,7 +15,7 @@ DEBUT
             DEBUT
                 SI resultat >= 3 ALORS
                 DEBUT
-                    ECRIRE('Résultat vaut plus que 3', '');
+                    ECRIRE('Résultat vaut plus que 2', '');
                     ECRIRE('Décrémentation de résultat jusqu''à 2', '');
                     TANTQUE resultat >= 3 FAIRE
                     DEBUT
